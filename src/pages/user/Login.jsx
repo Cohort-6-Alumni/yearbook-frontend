@@ -1,7 +1,11 @@
-import CustomCard from "../../components/CustomCard.jsx";
+import CustomCard from '../../components/CustomCard.jsx';
 
 const Login = () => {
-  return <div><CustomCard/></div>;
+  return (
+    <div>
+      <CustomCard />
+    </div>
+  );
 };
 
 export default Login;
