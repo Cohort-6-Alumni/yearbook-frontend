@@ -1,5 +1,11 @@
+import UserBanner from '../../components/UserBanner';
+
 const Profile = () => {
-  return <div></div>;
+  return (
+    <div>
+      <UserBanner />
+    </div>
+  );
 };
 
 export default Profile;
