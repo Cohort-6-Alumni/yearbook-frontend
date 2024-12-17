@@ -1,12 +1,13 @@
 import { FiSearch } from 'react-icons/fi';
 import { Button } from '@material-tailwind/react';
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
   return (
     <nav className="sticky top-0 z-10 bg-white">
       <div className="container mx-auto px-4 py-1 flex justify-between items-center">
         <div>
-          <img className="w-[60px] h-[60px] border-gray-300" src="/logo.png" alt="Logo" />
+          <img className="w-[60px] h-[60px] border-gray-300" src={logo} alt="Logo" />
         </div>
         <div className="relative max-w-md mx-auto">
           <input

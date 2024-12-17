@@ -1,10 +1,14 @@
+import avatar from "../assets/avatar.png";
+import instagram from "../assets/instagram.png";
+import linkedin from "../assets/linkedin.png";
+
 const CustomCard = () => {
   return (
     <div className="max-w-sm mx-auto bg-white border border-gray-200 rounded-lg shadow-md p-4">
       <div className="flex items-center mb-2">
         <img
           className="w-[120px] h-[120px] rounded-full border border-gray-300"
-          src="/avatar.png"
+          src={ avatar }
           alt="Avatar"
         />
         <div className="ml-4 w-full">
@@ -13,7 +17,7 @@ const CustomCard = () => {
           <div className={'w-full'}>
             <span className="text-gray-500 text-[12px]">Bio:</span>
             <span className="text-gray-500 text-[12px]">
-              I love reading and building apps and playing games...
+              I love reading and building...
             </span>
           </div>
         </div>
@@ -36,7 +40,7 @@ const CustomCard = () => {
         <div className={' flex items-center space-x-1'}>
           <img
             className="w-[14px] h-[14px] rounded-full border border-gray-300"
-            src="/linkedin.png"
+            src={linkedin }
             alt="Avatar"
           />
           <p className="text-[13px] font-light tracking-tight text-gray-800 ">Ammyforreal</p>
@@ -45,7 +49,7 @@ const CustomCard = () => {
         <div className={' flex items-center space-x-1'}>
           <img
             className="w-[14px] h-[14px] rounded-full border border-gray-300"
-            src="/instagram.png"
+            src={instagram}
             alt="Avatar"
           />
           <p className="text-[13px] font-light tracking-tight text-gray-800 ">Ammyforshort</p>

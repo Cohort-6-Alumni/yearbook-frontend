@@ -2,7 +2,7 @@ import TopLeftRight from '../assets/curve-1.png';
 import BottomLeft from '../assets/curve-2.png';
 import PropTypes from 'prop-types';
 
-const UserBanner = ({name}) => {
+const UserBanner = () => {
   return (
     <div className="mb-6 bg-gradient-to-r from-purple-500 to-blue-500 relative rounded-lg shadow-md p-6">
       <img
