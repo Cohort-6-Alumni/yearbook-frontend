@@ -9,6 +9,12 @@ export default withMT({
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],
       },
+      colors: {
+        purple: {
+          500: '#A855F7',
+          600: '#9333EA'
+        }
+      },
     },
   },
   plugins: [scrollbarHide],
