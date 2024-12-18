@@ -12,7 +12,7 @@ const App = () => {
         exact
         path="/completeProfile"
         element={
-          <NavLayout>
+          <NavLayout showNav>
             <CompleteProfile />
           </NavLayout>
         }
