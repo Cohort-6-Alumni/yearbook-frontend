@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import UserBanner from '../../components/UserBanner.jsx';
 import avatar from '../../assets/avatar.png';
 import { GoPencil } from 'react-icons/go';
@@ -6,10 +6,11 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { validationSchema } from '../../utils/schema/profileSchema.js';
 import { IoEyeOutline, IoEyeOffOutline, IoTrash, IoSaveOutline } from 'react-icons/io5';
 
-const UserAccount = ({user}) => {
+const UserAccount = () => {
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isUserDetailsEditable, setIsUserDetailsEditable] = useState(false);
+   
 
   return (
     <div>

@@ -24,6 +24,7 @@ const ContextProvider = ({ children }) => {
   const getUserData = () => userSessionData;
 
   const logout = () => {
+    console.log('Logging out');
     removeCookie('appToken', { path: '/' });
     setUserData(undefined);
   };
