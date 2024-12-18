@@ -30,6 +30,7 @@ export const login = async (username, password) => {
         
     }
 };
+
 export const updateAccount = async (token, data) => {
     try {
         const response = await axios.post(`${API_URL}/user/update`, data, {
