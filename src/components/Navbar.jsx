@@ -1,10 +1,11 @@
 import { FiSearch } from 'react-icons/fi';
-import { Button } from '@material-tailwind/react';
-import logo from "../assets/logo.png";
+import logo from '../assets/logo.png';
 
-const Navbar = () => {
+import PropTypes from 'prop-types';
+
+const Navbar = ({ component }) => {
   return (
-    <nav className="sticky top-0 z-10 bg-white">
+    <nav className="sticky top-0 z-10 bg-white pt-6">
       <div className="container mx-auto px-4 py-1 flex justify-between items-center">
         <div>
           <img className="w-[60px] h-[60px] border-gray-300" src={logo} alt="Logo" />
@@ -19,13 +20,15 @@ const Navbar = () => {
         </div>
 
         <div>
-          <Button size="sm" className="bg-[#9260E2]">
-            Login
-          </Button>
+          {component}
         </div>
       </div>
     </nav>
   );
+};
+
+Navbar.propTypes = {
+  component: PropTypes.object,
 };
 
 export default Navbar;
