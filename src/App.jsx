@@ -48,6 +48,7 @@ const App = () => {
       />
       <Route exact path="*" element={<Navigate to="/login" />} />
     </Routes>
+
   );
 };
 
