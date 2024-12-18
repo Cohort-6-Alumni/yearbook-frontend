@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router';
 import Login from './pages/user/Login';
-import CompleteProfile from './pages/app/CompleteProfile';
+import CompleteProfile from './pages/app/CompleteSignUp.jsx';
 import HomePage from './pages/app/HomePage.jsx';
 import NavLayout from './layout/NavLayout.jsx';
 
