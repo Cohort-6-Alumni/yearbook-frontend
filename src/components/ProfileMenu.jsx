@@ -31,17 +31,17 @@ const ProfileMenu = ({ user }) => {
     {
       label: 'My Profile',
       icon: IoPersonCircleOutline,
-      onClick: () => closeMenu,
+      onClick: () => closeMenu(),
     },
     {
       label: 'Edit Profile',
       icon: IoCogSharp,
-      onClick: () => closeMenu,
+      onClick: () => closeMenu(),
     },
     {
       label: 'Sign Out',
       icon: IoPowerSharp,
-      onClick: () => handleLogout,
+      onClick: () => handleLogout(),
     },
   ];
 
@@ -65,20 +65,20 @@ const ProfileMenu = ({ user }) => {
               variant="paragraph"
               className="hidden lg:block text-sm text-black font-semibold"
             >
-              {user?.data.username}
+              {user?.username}
             </Typography>
             <Typography
               variant="small"
               color="blue-gray"
               className="hidden lg:block text-xs text-left"
             >
-              {user?.data.role}
+              {user?.role}
             </Typography>
           </div>
         </Button>
       </MenuHandler>
       <MenuList className="p-1">
-        {profileMenuItems.map(({ label, icon,onClick }, key) => {
+        {profileMenuItems.map(({ label, icon, onClick }, key) => {
           const isLastItem = key === profileMenuItems.length - 1;
           return (
             <MenuItem
