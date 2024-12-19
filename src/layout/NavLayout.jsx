@@ -1,16 +1,30 @@
+import { useContext, useEffect, useState } from 'react';
 import Navbar from '../components/Navbar.jsx';
 import PropTypes from 'prop-types';
 import { Button } from '@material-tailwind/react';
 import ProfileMenu from '../components/ProfileMenu.jsx';
+import { AppContext } from '../context/contextApi.jsx';
 
+const NavLayout = ({ children, showNav = false }) => {
+  const { getUserData } = useContext(AppContext);
+  const [user, setUser] = useState(null);
 
-const NavLayout = ({ children,showNav=false, user=null }) => {
-let child
-  if(user == null){
-     child = 
-       <Button size="sm" className="bg-[#9260E2]">
-            Login
-          </Button>    
+  useEffect(() => {
+    const fetchUser = () => {
+      const userData = getUserData();
+      setUser(userData);
+    };
+    fetchUser();
+  }, [getUserData, user]);
+
+  console.log(user);
+  let child;
+  if (!user) {
+    child = (
+      <Button size="sm" className="bg-[#9260E2]">
+        Login
+      </Button>
+    );
   } else {
     child = <ProfileMenu user={user} />;
   }

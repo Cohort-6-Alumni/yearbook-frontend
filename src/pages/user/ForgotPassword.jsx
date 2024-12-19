@@ -1,65 +1,56 @@
-import React, { useEffect, useRef, useState } from "react";
-import * as Yup from "yup";
-import { Link } from "react-router-dom";
-import { Formik, Form } from "formik";
-import Field from "../../components/Field";
-import Button from "../../components/Button";
-import Badge from "../../components/Badge";
+import { useEffect, useRef, useState } from 'react';
+import * as Yup from 'yup';
+import { Link } from 'react-router';
+import { Formik, Form } from 'formik';
+import { Button, Badge, Input } from '@material-tailwind/react';
 
-import LogoImage from "../../assets/images/logo.png";
+import LogoImage from '../../assets/logo.png';
 
-import { forgotPasswordApi } from "../../util/ApiUtil"; //this is required to make api call
 
-//declare variable 
+//declare variable
 
 const ForgotPassword = () => {
-
   const formikRef = useRef();
   const [isFetching, setIsFetching] = useState(false);
 
   useEffect(() => {
-    document.title = "Forgot Password | Feed App";
+    document.title = 'Forgot Password | Yearbook';
   }, []);
 
-
   const onFormSubmit = async (values) => {
-
     console.log(values);
 
     if (!isFetching) {
       setIsFetching(true); // Prevent multiple submissions
       // Call the API with the provided email
-      const apiResponse = await forgotPasswordApi(values.email);
+      // const apiResponse = await forgotPasswordApi(values.email);
 
-      if (apiResponse.status === 1) {
-        formikRef.current.setFieldValue(
-          "formMessage",
-          "Please check your email to reset the password."
-        );
-      } else {
-        formikRef.current.setFieldValue("formMessage", apiResponse.payLoad);
-      }
+      // if (apiResponse.status === 1) {
+      //   formikRef.current.setFieldValue(
+      //     'formMessage',
+      //     'Please check your email to reset the password.'
+      //   );
+      // } else {
+      //   formikRef.current.setFieldValue('formMessage', apiResponse.payLoad);
+      // }
+      console.log('Form submitted');
       setIsFetching(false);
     }
-
-
   };
   //his helps with validation of the fields
   const ForgotPasswordSchema = Yup.object().shape({
-    email: Yup.string().required("Required"),
+    email: Yup.string().required('Required'),
   });
 
-
-  const ResetPasswordSchema = Yup.object().shape({
-    verifyToken: Yup.string().required("Required"),
-    password: Yup.string()
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
-        "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-      )
-      .required("Required"),
-});
-
+  //   const ResetPasswordSchema = Yup.object().shape({
+  //     verifyToken: Yup.string().required("Required"),
+  //     password: Yup.string()
+  //       .matches(
+  //         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
+  //         "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
+  //       )
+  //       .required("Required"),
+  // });
 
   return (
     <div className="bg-white">
@@ -70,7 +61,7 @@ const ForgotPassword = () => {
               <Formik
                 innerRef={formikRef}
                 initialValues={{
-                  email: "",
+                  email: '',
                   formMessage: undefined,
                 }}
                 validationSchema={ForgotPasswordSchema}
@@ -93,10 +84,12 @@ const ForgotPassword = () => {
                     </p>
 
                     <div className="my-5 w-60 mx-auto">
-                      <Field name="email" id="email" placeholder="" />
+                      <Input name="email" id="email" placeholder="" />
                     </div>
                     <div className="my-5 w-60 mx-auto">
-                      <Button text="Request Link" />
+                      <Button type="submit" fullWidth className="bg-purple-500 hover:bg-purple-600">
+                        Request Link
+                      </Button>{' '}
                     </div>
                     <Link
                       to="/user/login"
