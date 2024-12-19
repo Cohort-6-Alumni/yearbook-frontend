@@ -15,7 +15,7 @@ const validationSchema = Yup.object({
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const { setSession } = useContext(AppContext);
+  const { setSession, setUserData } = useContext(AppContext);
   const [loginError, setLoginError] = useState('');
   const navigate = useNavigate();
   const formik = useFormik({
@@ -27,8 +27,9 @@ const LoginPage = () => {
     onSubmit: async (values) => {
       const response = await login(values.username, values.password);
       if (response.status === 200) {
-        setSession({ data: response.data, token: response.headers.authorization });
-        navigate('/');
+        setSession(response.headers.authorization);
+        setUserData(response.data);
+        navigate('/home');
       } else {
         setLoginError(response.data.message);
       }

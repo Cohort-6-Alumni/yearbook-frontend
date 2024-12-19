@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { Link } from 'react-router';
-import { Formik, Form, Field } from 'formik';
+import { Formik, Form } from 'formik';
 import { Button, Badge, Input } from '@material-tailwind/react';
 
 import LogoImage from '../../assets/logo.png';

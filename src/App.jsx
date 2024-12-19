@@ -1,45 +1,13 @@
-import { Routes, Route, Navigate } from 'react-router';
-import Login from './pages/user/Login';
-import CompleteSignup from './pages/app/CompleteSignUp.jsx';
-import HomePage from './pages/app/HomePage.jsx';
-import NavLayout from './layout/NavLayout.jsx';
-import ForgotPassword from './pages/user/ForgotPassword.jsx';
-import AuthenticatedRoute from './components/AuthenticatedRoute.jsx';
+import { useContext } from 'react';
+import OpenRoutes from './routes/OpenRoutes.jsx';
+import AuthenticatedRoute from './routes/AuthenticatedRoute.jsx';
+import { AppContext } from './context/contextApi';
 
 const App = () => {
-  return (
-    <Routes>
-      <Route exact path="/login" element={<Login />} />
-      <Route exact path="/forgotPassword" element={<ForgotPassword />} />
-      <Route
-        exact
-        path="/completeSignup"
-        element={
-          <AuthenticatedRoute
-            element={
-              <NavLayout showNav>
-                <CompleteSignup />
-              </NavLayout>
-            }
-          />
-        }
-      />
-      <Route
-        exact
-        path="/home"
-        element={
-          <AuthenticatedRoute
-            element={
-              <NavLayout showNav>
-                <HomePage />
-              </NavLayout>
-            }
-          />
-        }
-      />
-      <Route exact path="*" element={<Navigate to="/login" />} />
-    </Routes>
-  );
+  const { getSession } = useContext(AppContext);
+  const isAuthenticated = !!getSession();
+
+  return isAuthenticated ? <AuthenticatedRoute /> : <OpenRoutes />;
 };
 
 export default App;

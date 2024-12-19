@@ -1,17 +1,16 @@
-import React, { useState } from 'react';
+import { createContext } from 'react';
 import { useCookies } from 'react-cookie';
 import PropTypes from 'prop-types';
 
-const AppContext = React.createContext();
+const AppContext = createContext();
 
 const ContextProvider = ({ children }) => {
-  const [cookies, setCookie, removeCookie] = useCookies(['appToken']);
-  const [userSessionData, setUserSessionData] = useState(undefined);
+  const [cookies, setCookie, removeCookie] = useCookies(['appToken', 'userData']);
 
   const setSession = (token) => {
     setCookie('appToken', token, {
       path: '/',
-      maxAge: 3600 * 1000, // 1 hour in milliseconds
+      maxAge: 3600, // 1 hour in seconds
     });
   };
 
@@ -19,14 +18,20 @@ const ContextProvider = ({ children }) => {
     return cookies.appToken || null;
   };
 
-  const setUserData = (userData) => setUserSessionData(userData);
+  const setUserData = (userData) =>
+    setCookie('userData', userData, {
+      path: '/',
+      maxAge: 3600, // 1 hour in seconds
+    });
 
-  const getUserData = () => userSessionData;
+  const getUserData = () => {
+    return cookies.userData || null;
+  };
 
   const logout = () => {
     console.log('Logging out');
     removeCookie('appToken', { path: '/' });
-    setUserData(undefined);
+    removeCookie('userData', { path: '/' });
   };
 
   return (

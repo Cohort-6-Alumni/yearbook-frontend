@@ -65,14 +65,14 @@ const ProfileMenu = ({ user }) => {
               variant="paragraph"
               className="hidden lg:block text-sm text-black font-semibold"
             >
-              {user?.data.username}
+              {user?.username}
             </Typography>
             <Typography
               variant="small"
               color="blue-gray"
               className="hidden lg:block text-xs text-left"
             >
-              {user?.data.role}
+              {user?.role}
             </Typography>
           </div>
         </Button>
