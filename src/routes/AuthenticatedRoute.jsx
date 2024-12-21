@@ -15,7 +15,7 @@ const AuthenticatedRoute = () => {
       <Route path="/user/sendInvite" element={<CompleteSignup />} />
       <Route
         exact
-        path="/home"
+        path="/year"
         element={
           <NavLayout showNav>
             <HomePage />

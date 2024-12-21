@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
@@ -30,8 +30,8 @@ const LandingPage = () => {
   return (
     <>
       <div className="flex overflow-hidden flex-col px-8 py-11 bg-white max-md:px-5">
-        <section className=" bg-opacity-30 py-10 sm:py-16 lg:py-24">
-          <div className="bg-[#8627f115] flex flex-col items-center pt-6 pb-11 mt-24 w-full max-md:px-5 max-md:mt-10 max-md:mr-1.5 max-md:max-w-full mx-auto max-w-7xl overflow-hidden py-10 pr-7 pl-16 max-md:px-5 max-md:mr-1.5 max-md:max-w-full rounded-3xl">
+        <section className=" bg-opacity-30 py-10 sm:py-16 lg:py-8">
+          <div className="bg-[#8627f115] flex flex-col items-center pt-6 pb-11 w-full max-md:px-5 max-md:mt-10 max-md:mr-1.5 max-md:max-w-full mx-auto max-w-7xl overflow-hidden py-10 pr-7 pl-16 max-md:px-5 max-md:mr-1.5 max-md:max-w-full rounded-3xl">
             <LandingPageNavbar />
             <div className="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
               <div>
@@ -59,7 +59,7 @@ const LandingPage = () => {
 
         <section id="about">
           <div className="flex flex-col items-center pt-6 pb-11 mx-auto max-w-7xl max-md:px-5 max-md:mt-10 max-md:mr-1.5 max-md:max-w-full">
-            <h2 className="gap-2.5 self-center px-5 py-2.5 mt-32 ml-2.5 text-4xl font-medium text-white bg-purple-600 leading-[68px] max-md:mt-10 max-md:max-w-full">
+            <h2 className="gap-2.5 self-center px-5 py-2.5 ml-2.5 text-4xl font-medium text-white bg-purple-600 leading-[68px] max-md:mt-10 max-md:max-w-full">
               ABOUT ALUMNI YEARBOOK
             </h2>
             <div className="gap-8 grid grid-cols-12 justify-between items-center mt-14 text-black max-md:mt-10 w-full">
