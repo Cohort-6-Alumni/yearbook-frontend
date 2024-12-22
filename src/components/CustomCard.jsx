@@ -1,23 +1,28 @@
-import avatar from "../assets/avatar.png";
-import instagram from "../assets/instagram.png";
+import instagramLogo from "../assets/instagram.png";
 import linkedin from "../assets/linkedin.png";
+import PropTypes from "prop-types";
 
-const CustomCard = () => {
+
+const CustomCard = ({ bio,previousField,hobbies,instagram, firstName, lastName,picture }) => {
   return (
-    <div className="max-w-sm mx-auto bg-white border border-gray-200 rounded-lg shadow-md p-4">
+    <div className="max-w-sm mx-auto bg-white border border-gray-200 rounded-lg shadow-md p-4 cursor-pointer">
       <div className="flex items-center mb-2">
         <img
           className="w-[120px] h-[120px] rounded-full border border-gray-300"
-          src={ avatar }
+          src={ picture }
           alt="Avatar"
         />
         <div className="ml-4 w-full">
-          <h5 className="text-[18px] text-gray-800 font-bold mb-1">John Doe</h5>
-          <p className="text-[14px] text-gray-500 mb-1">Software Engineer</p>
-          <div className={'w-full'}>
+            <div className="flex items-center gap-2">
+                <h5 className="text-lg text-gray-800 font-bold mb-1">{firstName}</h5>
+                <h5 className="text-lg text-gray-800 font-bold mb-1">{lastName}</h5>
+            </div>
+
+            <p className="text-sm text-gray-500">Software Engineer</p>
+          <div className={'w-full space-x-1'}>
             <span className="text-gray-500 text-[12px]">Bio:</span>
             <span className="text-gray-500 text-[12px]">
-              I love reading and building...
+             {bio}
             </span>
           </div>
         </div>
@@ -25,14 +30,13 @@ const CustomCard = () => {
 
       <div className=" w-full flex items-center mb-2 space-x-2 text-left">
         <p className="text-[14px] font-semibold tracking-tight text-gray-800">Previous field:</p>
-        <p className="text-[14px] font-medium text-gray-800">Product management</p>
+        <p className="text-[14px] font-medium text-gray-800">{previousField}</p>
       </div>
 
       <div className=" w-full flex items-center mb-2 text-left space-x-2 pl-8">
         <p className="text-[14px] font-semibold tracking-tight text-gray-800 ">Hobbies:</p>
         <div className={' flex items-center'}>
-          <p className="text-[14px] font-medium text-gray-800">Cooking</p>
-          <p className="text-[14px]  font-medium text-gray-800">,Reading</p>
+          <p className="text-[14px] font-medium text-gray-800">{hobbies}</p>
         </div>
       </div>
 
@@ -49,10 +53,10 @@ const CustomCard = () => {
         <div className={' flex items-center space-x-1'}>
           <img
             className="w-[14px] h-[14px] rounded-full border border-gray-300"
-            src={instagram}
+            src={instagramLogo}
             alt="Avatar"
           />
-          <p className="text-[13px] font-light tracking-tight text-gray-800 ">Ammyforshort</p>
+          <p className="text-[13px] font-light tracking-tight text-gray-800 ">{instagram}</p>
         </div>
       </div>
     </div>
@@ -60,3 +64,14 @@ const CustomCard = () => {
 };
 
 export default CustomCard;
+
+
+CustomCard.propTypes = {
+    bio:PropTypes.string,
+    previousField: PropTypes.string,
+    hobbies: PropTypes.array,
+    instagram:PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    picture: PropTypes.string,
+};

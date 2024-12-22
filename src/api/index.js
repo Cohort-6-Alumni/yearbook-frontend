@@ -2,6 +2,7 @@ import axios from 'axios';
 
 
 const API_URL = import.meta.env.VITE_API_URL;
+console.log("API",API_URL)
 const frameToken = (token) => {
   return `Bearer ${token}`;
 };
@@ -43,5 +44,17 @@ export const updateAccount = async (token, data) => {
     } catch (error) {
         return error.response;
         
+    }
+};
+
+
+export const getProfiles = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/profiles`);
+        return response;
+
+    } catch (error) {
+        return error.response;
+
     }
 };

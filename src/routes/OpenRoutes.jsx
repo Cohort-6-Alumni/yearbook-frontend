@@ -13,7 +13,7 @@ const OpenRoutes = () => {
       <Route path="/user/sendInvite" element={<CompleteSignup />} />
       <Route
         exact
-        path="/home"
+        path="/yearbook"
         element={
           <NavLayout showNav>
             <HomePage />
@@ -22,7 +22,7 @@ const OpenRoutes = () => {
       />
       <Route
         exact
-        path="/user/forgotPassword"
+        path="/user/forgot_password"
         element={
           <NavLayout showNav>
             <ForgotPassword />

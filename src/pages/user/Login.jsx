@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import Logo from '../../assets/logo.png';
 import { login } from '../../api';
 import { AppContext } from '../../context/contextApi';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 const validationSchema = Yup.object({
   username: Yup.string().required('Username is required'),
@@ -42,7 +42,8 @@ const LoginPage = () => {
       <div className="w-1/2 p-8 flex items-center justify-center">
         <Card className="w-full max-w-md p-8">
           <div className="flex justify-center mb-6">
-            <img src={Logo} alt="Graduation Icon" className="w-16 h-16" />
+            <Link to="/"> <img src={Logo} alt="Graduation Icon" className="w-16 h-16"/></Link>
+
           </div>
 
           <Typography variant="h3" className="text-center mb-8">
