@@ -4,21 +4,33 @@ import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
 import ContributorCard from '../../components/ContributorCard.jsx';
 import LandingPageNavbar from '../../components/LandingPageNavbar.jsx';
-import { contributors } from '../../data/contributors.js';
+import { motion, AnimatePresence } from 'framer-motion';
 import HeroGirl from '../../images/hero-girl.png';
 import Journey from '../../images/journey.png';
+import useFetchContributors from '../../hooks/useFetchContributors.jsx';
 
 const LandingPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const { contributors, loading, error } = useFetchContributors(
+    'Cohort-6-Alumni',
+    'yearbook-frontend',
+    'Cohort-6-Alumni',
+    'yearbook'
+  );
+
+  const itemsPerPage = 4;
 
   const prevSlide = () => {
     const isFirstSlide = currentIndex === 0;
-    const newIndex = isFirstSlide ? Math.ceil(contributors.length / 3) - 1 : currentIndex - 1;
+    const newIndex = isFirstSlide
+      ? Math.ceil(contributors.length / itemsPerPage) - 1
+      : currentIndex - 1;
     setCurrentIndex(newIndex);
   };
 
   const nextSlide = () => {
-    const isLastSlide = currentIndex === Math.ceil(contributors.length / 3) - 1;
+    const isLastSlide = currentIndex === Math.ceil(contributors.length / itemsPerPage) - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
@@ -26,7 +38,10 @@ const LandingPage = () => {
   const goToSlide = (slideIndex) => {
     setCurrentIndex(slideIndex);
   };
-  
+
+  const startIndex = currentIndex * itemsPerPage;
+  const selectedContributors = contributors.slice(startIndex, startIndex + itemsPerPage);
+
   return (
     <>
       <div className="flex overflow-hidden flex-col px-8 py-11 bg-white max-md:px-5">
@@ -48,7 +63,7 @@ const LandingPage = () => {
               <div>
                 <img
                   loading="lazy"
-                  src={HeroGirl}  
+                  src={HeroGirl}
                   alt="hero image"
                   className="object-contain grow w-full aspect-[1.06] max-md:mt-10 max-md:max-w-full"
                 />
@@ -108,25 +123,41 @@ const LandingPage = () => {
 
         <section id="contributors">
           <div className="bg-[#8627f115] flex flex-col items-center px-4 pt-6 pb-11 mx-auto max-w-7xl max-md:px-5 max-md:mt-10 max-md:mr-1.5 max-md:max-w-full relative group">
-            <header className='mt-10 mb-14 text-center'>
-            <h2 className='text-5xl font-bold uppercase'>Contributors</h2>
-            <p>Meet the developers</p>
+            <header className="mt-10 mb-10 text-center">
+              <h2 className="text-5xl font-bold uppercase">Contributors</h2>
+              <p>Meet the developers</p>
             </header>
-            <div className="overflow-hidden w-full">
-              <div
-                style={{ transform: `translateX(-${currentIndex * 100 / 3}%)` }}
-                className="flex gap-2 transition-transform duration-500 ease-in-out"
-              >
-                {contributors.map((contributor) => (
-                  <div
-                    key={contributor.id}
-                    className="min-w-[33.33%] max-md:min-w-full"
+            <section className="overflow-hidden w-full">
+              <div className="container mx-auto h-40 flex items-center justify-center">
+                <AnimatePresence initial={false}>
+                  <motion.div
+                    key={currentIndex}
+                    initial={{ opacity: 0, x: -50 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
                   >
-                    <ContributorCard {...contributor} />
-                  </div>
-                ))}
+                    {selectedContributors.map((contributor, index) => (
+                      <motion.div
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.85 }}
+                        animate={{ scale: hoveredIndex === index ? 1.1 : 0.9 }}
+                        onHoverStart={() => setHoveredIndex(index)}
+                        onHoverEnd={() => setHoveredIndex(null)}
+                        key={contributor.id}
+                      >
+                        <ContributorCard
+                          key={contributor.id}
+                          avatarUrl={contributor.avatar_url}
+                          fullName={contributor.fullName}
+                          githubHandle={contributor.login}
+                        />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                </AnimatePresence>
               </div>
-            </div>
+            </section>
             {/* Left Arrow */}
             <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
               <BsChevronCompactLeft onClick={prevSlide} size={30} />
@@ -136,15 +167,17 @@ const LandingPage = () => {
               <BsChevronCompactRight onClick={nextSlide} size={30} />
             </div>
             <div className="flex top-4 justify-center py-2">
-              {Array.from({ length: Math.ceil(contributors.length / 3) }).map((_, index) => (
-                <div
-                  key={index}
-                  onClick={() => goToSlide(index)}
-                  className="text-2xl cursor-pointer"
-                >
-                  <RxDotFilled />
-                </div>
-              ))}
+              {Array.from({ length: Math.ceil(contributors.length / itemsPerPage) }).map(
+                (_, index) => (
+                  <div
+                    key={index}
+                    onClick={() => goToSlide(index)}
+                    className={`text-2xl cursor-pointer ${index === currentIndex ? 'text-indigo-500' : 'text-gray-500'}`}
+                  >
+                    <RxDotFilled />
+                  </div>
+                )
+              )}
             </div>
           </div>
         </section>
