@@ -29,9 +29,9 @@ const ProfileMenu = ({ user }) => {
   // profile menu component
   const profileMenuItems = [
     {
-      label: 'My Profile',
+      label: 'My Account',
       icon: IoPersonCircleOutline,
-      onClick: () => closeMenu(),
+      onClick: () => navigate('/user/details'),
     },
     {
       label: 'Edit Profile',

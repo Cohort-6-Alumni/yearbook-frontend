@@ -19,7 +19,6 @@ const NavLayout = ({ children, showNav = false }) => {
     fetchUser();
   }, [getUserData, user]);
 
-  console.log(user);
 
   const handleLogin=()=>{
     navigate('/login');
