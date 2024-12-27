@@ -6,14 +6,15 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { validationSchema } from '../../utils/schema/profileSchema.js';
 import { IoEyeOutline, IoEyeOffOutline, IoTrash, IoSaveOutline } from 'react-icons/io5';
 import { AppContext } from '../../context/contextApi';
+import { updateAccount } from '../../api';
+import toast from 'react-hot-toast';
 
 const UserAccount = () => {
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isUserDetailsEditable, setIsUserDetailsEditable] = useState(false);
 
-  const { getUserData } = useContext(AppContext);
-   
+  const { getUserData, getSession, setSession } = useContext(AppContext);
 
   return (
     <div>
@@ -39,8 +40,20 @@ const UserAccount = () => {
               password: '',
             }}
             validationSchema={validationSchema}
-            onSubmit={(values) => {
-              console.log(values);
+            onSubmit={async (values) => {
+              try {
+                const response = await updateAccount(getSession(), values);
+                if (response.status === 200) {
+                  setSession(response);
+                  toast.success('Profile updated successfully');
+                }
+              } catch (error) {
+                if (error.response) {
+                  toast.error(error.response.data.message);
+                }
+                console.error(error);
+                
+              }
             }}
           >
             {({ values, initialValues }) => (

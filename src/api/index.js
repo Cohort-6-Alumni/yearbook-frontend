@@ -32,6 +32,8 @@ export const login = async (username, password) => {
     }
 };
 
+// Update user details
+
 export const updateAccount = async (token, data) => {
     try {
         const response = await axios.post(`${API_URL}/user/update`, data, {

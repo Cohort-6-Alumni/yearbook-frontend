@@ -7,6 +7,7 @@ import TopRightElipse from '../../assets/top-right-elipse.png';
 import BottomLeftElipse from '../../assets/bottom-left-elipse.png';
 import { Link,useSearchParams, useNavigate } from 'react-router';
 import { completeSignUp } from '../../api';
+import toast from 'react-hot-toast';
  
 
 const validationSchema = Yup.object({
@@ -32,7 +33,7 @@ const CompleteSignUp = () => {
       try {
         const response = await completeSignUp(token, values.password);
         if (response.status === 200) {
-          console.log('Account created successfully');
+          toast.success("Account created successfully!");
           navigate('/login');
         } else {
           console.log(response.data.message);

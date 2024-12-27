@@ -145,6 +145,8 @@ const LandingPage = () => {
                         onHoverStart={() => setHoveredIndex(index)}
                         onHoverEnd={() => setHoveredIndex(null)}
                         key={contributor.id}
+                        className="cursor-pointer"
+                        onClick={() => window.open(contributor.html_url, '_blank')}
                       >
                         <ContributorCard
                           key={contributor.id}

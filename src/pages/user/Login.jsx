@@ -29,7 +29,7 @@ const LoginPage = () => {
       if (response.status === 200) {
         setSession(response.headers.authorization);
         setUserData(response.data);
-        navigate('/home');
+        navigate('/yearbook');
       } else {
         setLoginError(response.data.message);
       }
@@ -132,5 +132,6 @@ const LoginPage = () => {
     </div>
   );
 };
+
 
 export default LoginPage;
