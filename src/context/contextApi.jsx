@@ -1,11 +1,12 @@
-import { createContext } from 'react';
+import { createContext, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import PropTypes from 'prop-types';
 
-const AppContext = createContext();
+const AppContext = createContext(null);
 
 const ContextProvider = ({ children }) => {
   const [cookies, setCookie, removeCookie] = useCookies(['appToken', 'userData']);
+  const [profilesCxt, setProfilesCxt] = useState([]);
 
   const setSession = (token) => {
     setCookie('appToken', token, {
@@ -34,6 +35,9 @@ const ContextProvider = ({ children }) => {
     removeCookie('userData', { path: '/' });
   };
 
+  const setUserProfilesCxt = (profiles) => { setProfilesCxt(profiles); };
+  const getUserProfilesCxt = () => profilesCxt;
+
   return (
     <AppContext.Provider
       value={{
@@ -42,6 +46,8 @@ const ContextProvider = ({ children }) => {
         setUserData,
         getUserData,
         logout,
+          setUserProfilesCxt,
+          getUserProfilesCxt
       }}
     >
       {children}
