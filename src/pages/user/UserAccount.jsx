@@ -5,12 +5,16 @@ import { GoPencil } from 'react-icons/go';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { validationSchema } from '../../utils/schema/profileSchema.js';
 import { IoEyeOutline, IoEyeOffOutline, IoTrash, IoSaveOutline } from 'react-icons/io5';
+import { AppContext } from '../../context/contextApi';
+import { updateAccount } from '../../api';
+import toast from 'react-hot-toast';
 
 const UserAccount = () => {
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isUserDetailsEditable, setIsUserDetailsEditable] = useState(false);
-   
+
+  const { getUserData, getSession, setSession } = useContext(AppContext);
 
   return (
     <div>
@@ -29,18 +33,30 @@ const UserAccount = () => {
         <div className="w-full">
           <Formik
             initialValues={{
-              firstName: '',
-              username: '',
-              lastName: '',
-              email: '',
+              firstName: getUserData().firstName,
+              username: getUserData().username,
+              lastName: getUserData().lastName,
+              email: getUserData().emailId,
               password: '',
             }}
             validationSchema={validationSchema}
-            onSubmit={(values) => {
-              console.log(values);
+            onSubmit={async (values) => {
+              try {
+                const response = await updateAccount(getSession(), values);
+                if (response.status === 200) {
+                  setSession(response);
+                  toast.success('Profile updated successfully');
+                }
+              } catch (error) {
+                if (error.response) {
+                  toast.error(error.response.data.message);
+                }
+                console.error(error);
+                
+              }
             }}
           >
-            {() => (
+            {({ values, initialValues }) => (
               <Form>
                 <div className="container mx-auto p-8">
                   <div className="flex w-full justify-between mb-4">
@@ -69,8 +85,6 @@ const UserAccount = () => {
                         type="text"
                         id="firstName"
                         name="firstName"
-                        // valuue={user.firstName}
-                        // placeholder="Enter your first name"
                         disabled={!isUserDetailsEditable}
                         className={`mt-1 block w-full rounded-md border-[1px] ${
                           isUserDetailsEditable
@@ -228,7 +242,12 @@ const UserAccount = () => {
                     <div>
                       <button
                         type="submit"
-                        className="flex items-center gap-2 py-3 px-20 text-[14px] bg-[#118B50] text-[#FFF] rounded-md justify-center"
+                        disabled={JSON.stringify(values) === JSON.stringify(initialValues)}
+                        className={`flex items-center gap-2 py-3 px-20 text-[14px] ${
+                          JSON.stringify(values) === JSON.stringify(initialValues)
+                            ? 'bg-gray-400 cursor-not-allowed'
+                            : 'bg-[#118B50]'
+                        } text-[#FFF] rounded-md justify-center`}
                       >
                         <IoSaveOutline className="h-5 w-5" /> Save
                       </button>
