@@ -7,6 +7,7 @@ import ForgotPassword from '../pages/user/ForgotPassword.jsx';
 import LandingPage from '../pages/app/LandingPage.jsx';
 import Profile from '../pages/user/Profile.jsx';
 import UserAccount from '../pages/user/UserAccount.jsx';
+import ReadOnlyProfile from "../pages/app/ReadOnlyProfile.jsx";
 
 const AuthenticatedRoute = () => {
   return (
@@ -40,6 +41,15 @@ const AuthenticatedRoute = () => {
           </NavLayout>
         }
       />
+        <Route
+            exact
+            path="/user_profile/:profileId"
+            element={
+                <NavLayout showNav>
+                    <ReadOnlyProfile />
+                </NavLayout>
+            }
+        />
       <Route
         exact
         path="/user/forgotPassword"
