@@ -60,3 +60,15 @@ export const getProfiles = async () => {
 
     }
 };
+
+
+export const getProfile = async (profileId) => {
+    try {
+        const response = await axios.get(`${API_URL}/profile/${profileId}`);
+        return response;
+
+    } catch (error) {
+        return error.response;
+
+    }
+};
