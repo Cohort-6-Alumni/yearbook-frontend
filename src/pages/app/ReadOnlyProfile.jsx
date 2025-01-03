@@ -1,23 +1,25 @@
-import { useParams } from "react-router";
-import {useContext} from "react";
-import {AppContext} from "../../context/contextApi.jsx";
+import { useParams } from 'react-router';
+import useFetchProfile from '../../hooks/useFetchProfile.jsx';
+import Loader from '../../components/Loader.jsx';
 
-const ReadOnlyProfile =()=> {
-    const { getUserProfilesCxt } = useContext(AppContext);
+const ReadOnlyProfile = () => {
+  const params = useParams();
+  const { profile, loading, error } = useFetchProfile(params.profileId);
 
-    const params = useParams();
-
-    console.log("PARAMS", params);
-    const foundUser = getUserProfilesCxt().find((profile) => profile.profileId === params.profileId);
+  if (loading) {
+    return <Loader />;
+  }
+  if (error) {
+    console.error(error);
+  }
 
   return (
-      <div>
-          <div>{params.profileId}</div>
-          <div>{foundUser?.user.firstName}</div>
-          <div>{foundUser?.user.lastName}</div>
-      </div>
-
-  )
-}
+    <div>
+      <div>{params.profileId}</div>
+      <div>{profile?.user.firstName}</div>
+      <div>{profile?.user.lastName}</div>
+    </div>
+  );
+};
 
 export default ReadOnlyProfile;

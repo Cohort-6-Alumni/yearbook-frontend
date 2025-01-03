@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Button } from '@material-tailwind/react';
 import ProfileMenu from '../components/ProfileMenu.jsx';
 import { AppContext } from '../context/contextApi.jsx';
-import {useNavigate} from "react-router";
+import { useNavigate } from 'react-router';
 
 const NavLayout = ({ children, showNav = false }) => {
   const { getUserData } = useContext(AppContext);
@@ -19,10 +19,9 @@ const NavLayout = ({ children, showNav = false }) => {
     fetchUser();
   }, [getUserData, user]);
 
-
-  const handleLogin=()=>{
+  const handleLogin = () => {
     navigate('/login');
-  }
+  };
 
   let child;
   if (!user) {

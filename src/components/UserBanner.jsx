@@ -1,6 +1,5 @@
 import TopLeftRight from '../assets/curve-1.png';
 import BottomLeft from '../assets/curve-2.png';
-import PropTypes from 'prop-types';
 
 const UserBanner = () => {
   return (
@@ -28,10 +27,6 @@ const UserBanner = () => {
       />
     </div>
   );
-};
-
-UserBanner.propTypes = {
-  name: PropTypes.string.isRequired,
 };
 
 export default UserBanner;

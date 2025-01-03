@@ -35,7 +35,9 @@ const ContextProvider = ({ children }) => {
     removeCookie('userData', { path: '/' });
   };
 
-  const setUserProfilesCxt = (profiles) => { setProfilesCxt(profiles); };
+  const setUserProfilesCxt = (profiles) => {
+    setProfilesCxt(profiles);
+  };
   const getUserProfilesCxt = () => profilesCxt;
 
   return (
@@ -46,8 +48,8 @@ const ContextProvider = ({ children }) => {
         setUserData,
         getUserData,
         logout,
-          setUserProfilesCxt,
-          getUserProfilesCxt
+        setUserProfilesCxt,
+        getUserProfilesCxt,
       }}
     >
       {children}

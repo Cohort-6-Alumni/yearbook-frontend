@@ -5,10 +5,9 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import TopRightElipse from '../../assets/top-right-elipse.png';
 import BottomLeftElipse from '../../assets/bottom-left-elipse.png';
-import { Link,useSearchParams, useNavigate } from 'react-router';
+import { Link, useSearchParams, useNavigate } from 'react-router';
 import { completeSignUp } from '../../api';
 import toast from 'react-hot-toast';
- 
 
 const validationSchema = Yup.object({
   password: Yup.string()
@@ -21,8 +20,8 @@ const validationSchema = Yup.object({
 
 const CompleteSignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
-   const [searchParams] = useSearchParams();
-   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       password: '',
@@ -33,24 +32,17 @@ const CompleteSignUp = () => {
       try {
         const response = await completeSignUp(token, values.password);
         if (response.status === 200) {
-          toast.success("Account created successfully!");
+          toast.success('Account created successfully!');
           navigate('/login');
         } else {
           console.log(response.data.message);
         }
-        
       } catch (error) {
         console.log(error);
-        
       }
-      
     },
   });
   const token = searchParams.get('token');
-
- 
-
-  
 
   return (
     <div className="min-h-screen bg-purple-500 flex items-center justify-center p-4 relative">

@@ -7,6 +7,7 @@ import ForgotPassword from '../pages/user/ForgotPassword.jsx';
 import LandingPage from '../pages/app/LandingPage.jsx';
 import Profile from '../pages/user/Profile.jsx';
 import UserAccount from '../pages/user/UserAccount.jsx';
+import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 
 const AuthenticatedRoute = () => {
   return (
@@ -24,10 +25,19 @@ const AuthenticatedRoute = () => {
       />
       <Route
         exact
-        path="/user/profile"
+        path="/user/profile/:profileId/edit"
         element={
           <NavLayout showNav>
             <Profile />
+          </NavLayout>
+        }
+      />
+      <Route
+        exact
+        path="/public_profile/:profileId"
+        element={
+          <NavLayout showNav>
+            <ReadOnlyProfile />
           </NavLayout>
         }
       />

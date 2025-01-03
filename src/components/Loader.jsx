@@ -1,10 +1,8 @@
-import { ImSpinner8 } from 'react-icons/im';
+import { Spinner } from '@material-tailwind/react';
 const Loader = () => {
   return (
-    <div className="min-h-screen bg-gradientBg bg-no-repeat bg-cover bg-center flex flex-col justify-center items-center">
-      <div className="flex justify-center items-center h-500">
-        <ImSpinner8 className="text-5xl animate-spin _text-white" />
-      </div>
+    <div className="fixed inset-0 flex justify-center items-center bg-white">
+      <Spinner color="indigo" className="h-10 w-10" />
     </div>
   );
 };

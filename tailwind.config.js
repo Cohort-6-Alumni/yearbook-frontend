@@ -12,8 +12,8 @@ export default withMT({
       colors: {
         purple: {
           500: '#A855F7',
-          600: '#9333EA'
-        }
+          600: '#9333EA',
+        },
       },
     },
   },
