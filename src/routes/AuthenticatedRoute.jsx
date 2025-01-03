@@ -34,7 +34,7 @@ const AuthenticatedRoute = () => {
       />
       <Route
         exact
-        path="/public_profile/:profileId"
+        path="/public/profile/:profileId"
         element={
           <NavLayout showNav>
             <ReadOnlyProfile />
