@@ -52,7 +52,6 @@ const UserAccount = () => {
                   toast.error(error.response.data.message);
                 }
                 console.error(error);
-                
               }
             }}
           >

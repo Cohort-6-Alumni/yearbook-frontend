@@ -5,7 +5,7 @@ import HomePage from '../pages/app/HomePage.jsx';
 import ForgotPassword from '../pages/user/ForgotPassword.jsx';
 import LandingPage from '../pages/app/LandingPage.jsx';
 import NavLayout from '../layout/NavLayout.jsx';
-import ReadOnlyProfile from "../pages/app/ReadOnlyProfile.jsx";
+import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 
 const OpenRoutes = () => {
   return (
@@ -21,15 +21,15 @@ const OpenRoutes = () => {
           </NavLayout>
         }
       />
-        <Route
-            exact
-            path="/user_profile/:profileId"
-            element={
-                <NavLayout showNav>
-                    <ReadOnlyProfile />
-                </NavLayout>
-            }
-        />
+      <Route
+        exact
+        path="/public/profile/:profileId"
+        element={
+          <NavLayout showNav>
+            <ReadOnlyProfile />
+          </NavLayout>
+        }
+      />
       <Route
         exact
         path="/user/forgot_password"

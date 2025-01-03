@@ -1,16 +1,17 @@
 import {
-    Card,
-    CardBody,
-    CardFooter,
-    Typography,
-    Tooltip,
-} from "@material-tailwind/react";
-import PropTypes from "prop-types";
-import {useNavigate} from "react-router";
-import {useContext} from "react";
-import {AppContext} from "../context/contextApi.jsx";
-import instagramLogo from "../assets/instagram.png";
-import linkedin from "../assets/linkedin.png";
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Typography,
+  Tooltip,
+} from '@material-tailwind/react';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router';
+import { useContext } from 'react';
+import { AppContext } from '../context/contextApi.jsx';
+import instagramLogo from '../assets/instagram.png';
+import linkedin from '../assets/linkedin.png';
 
 const ProfileCard = ({  firstName, lastName,picture,id, currentRole })=> {
 
@@ -19,7 +20,7 @@ const ProfileCard = ({  firstName, lastName,picture,id, currentRole })=> {
     console.log("CUSTOM CARD",getUserProfilesCxt())
 
     const handleClick = ()=>{
-        navigate(`/user_profile/${id}`)
+        navigate(`/public/profile/${id}`)
     }
     return (
         <Card className="max-w-xs mx-auto cursor-pointer" onClick={handleClick}>
@@ -103,7 +104,6 @@ const ProfileCard = ({  firstName, lastName,picture,id, currentRole })=> {
 }
 
 export default ProfileCard;
-
 
 ProfileCard.propTypes = {
     firstName: PropTypes.string,

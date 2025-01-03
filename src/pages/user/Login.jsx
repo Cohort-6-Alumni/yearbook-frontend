@@ -7,6 +7,7 @@ import Logo from '../../assets/logo.png';
 import { login } from '../../api';
 import { AppContext } from '../../context/contextApi';
 import { Link, useNavigate } from 'react-router';
+import { Spinner } from '@material-tailwind/react';
 
 const validationSchema = Yup.object({
   username: Yup.string().required('Username is required'),
@@ -17,6 +18,7 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { setSession, setUserData } = useContext(AppContext);
   const [loginError, setLoginError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
@@ -25,6 +27,7 @@ const LoginPage = () => {
     },
     validationSchema,
     onSubmit: async (values) => {
+      setLoading(true);
       const response = await login(values.username, values.password);
       if (response.status === 200) {
         setSession(response.headers.authorization);
@@ -33,6 +36,7 @@ const LoginPage = () => {
       } else {
         setLoginError(response.data.message);
       }
+      setLoading(false);
     },
   });
 
@@ -42,8 +46,10 @@ const LoginPage = () => {
       <div className="w-1/2 p-8 flex items-center justify-center">
         <Card className="w-full max-w-md p-8">
           <div className="flex justify-center mb-6">
-            <Link to="/"> <img src={Logo} alt="Graduation Icon" className="w-16 h-16"/></Link>
-
+            <Link to="/">
+              {' '}
+              <img src={Logo} alt="Graduation Icon" className="w-16 h-16" />
+            </Link>
           </div>
 
           <Typography variant="h3" className="text-center mb-8">
@@ -89,8 +95,13 @@ const LoginPage = () => {
             </div>
             {loginError && <div className="text-red-500 text-sm text-center">{loginError}</div>}
 
-            <Button type="submit" fullWidth className="bg-purple-500 hover:bg-purple-600">
-              Login
+            <Button
+              type="submit"
+              fullWidth
+              className="bg-purple-500 hover:bg-purple-600 flex items-center justify-center"
+              disabled={loading}
+            >
+              {loading ? <Spinner className="h-5 w-5 text-white" /> : 'Login'}
             </Button>
 
             <div className="text-center">
@@ -132,6 +143,5 @@ const LoginPage = () => {
     </div>
   );
 };
-
 
 export default LoginPage;

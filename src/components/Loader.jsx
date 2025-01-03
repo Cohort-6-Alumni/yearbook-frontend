@@ -1,10 +1,8 @@
-import {ClipLoader} from "react-spinners";
+import { Spinner } from '@material-tailwind/react';
 const Loader = () => {
   return (
-    <div className="h-screen flex justify-center items-center w-full">
-      <div className="flex justify-center items-center h-500 w-full">
-        <ClipLoader size={50} color="#9260e2" />
-      </div>
+    <div className="fixed inset-0 flex justify-center items-center bg-white">
+      <Spinner color="indigo" className="h-10 w-10" />
     </div>
   );
 };

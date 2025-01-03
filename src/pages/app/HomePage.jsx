@@ -1,8 +1,9 @@
 import CustomCard from '../../components/CustomCard.jsx';
-import { useContext, useEffect, useState } from "react";
-import { getProfiles } from "../../api/index.js";
-import { AppContext } from "../../context/contextApi.jsx";
-import ProfileCard from "../../components/ProfileCard.jsx";
+import { useContext, useEffect, useState } from 'react';
+import { getProfiles } from '../../api/index.js';
+import { AppContext } from '../../context/contextApi.jsx';
+import ProfileCard from '../../components/ProfileCard.jsx';
+import AvatarPlaceholder from '../../assets/Profile_avatar_placeholder_large.png';
 import Loader from "../../components/Loader.jsx";
 
 const HomePage = () => {
@@ -20,7 +21,7 @@ const HomePage = () => {
         setUserProfilesCxt(res?.data.content)
         setLoading(false)
       } catch (err) {
-        console.error("Error fetching profiles:", err);
+        console.error('Error fetching profiles:', err);
       }
     };
 
@@ -31,6 +32,17 @@ const HomePage = () => {
     return (
         <Loader/>
     )
+  }
+
+  if (profiles.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-screen fixed inset-0">
+        <div className="text-center">
+          <h1 className="text-3xl font-semibold">No profiles found</h1>
+          <p className="text-gray-500 mt-2">Please check back later</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -50,17 +62,16 @@ const HomePage = () => {
         {/*    />*/}
         {/*))}*/}
 
-
         {profiles.map((profile) => (
-            <ProfileCard
-                key={profile?.profileId}
-                id={profile?.profileId}
-                instagram={profile?.instagram}
-                picture={profile?.picture}
-                firstName={profile?.firstName}
-                lastName={profile?.lastName}
-                currentRole={profile?.currentRole}
-            />
+          <ProfileCard
+            key={profile?.profileId}
+            id={profile?.profileId}
+            instagram={profile?.instagram}
+            picture={profile?.picture || AvatarPlaceholder}
+            firstName={profile?.firstName}
+            lastName={profile?.lastName}
+            currentRole={profile?.currentRole}
+          />
         ))}
       </div>
     </>

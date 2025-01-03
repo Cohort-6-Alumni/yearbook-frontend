@@ -6,7 +6,6 @@ import { Button, Badge, Input } from '@material-tailwind/react';
 
 import LogoImage from '../../assets/logo.png';
 
-
 //declare variable
 
 const ForgotPassword = () => {

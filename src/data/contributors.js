@@ -5,8 +5,7 @@ export const contributors = [
     name: 'Amyi',
     cohort: 'Cohot 6',
     role: 'Tech Enthusiast',
-    image:
-    UserImage,
+    image: UserImage,
     text: 'The academy was an eye opener for me . It taught me that impossible is nothing.',
   },
   {
@@ -14,8 +13,7 @@ export const contributors = [
     name: 'Siphu',
     cohort: 'Cohort 6',
     role: 'AI geek',
-    image:
-    UserImage,
+    image: UserImage,
     text: 'The academy was insightful to me, I encourage everyone moving to tech to apply for the bootcamp',
   },
   {
@@ -23,8 +21,7 @@ export const contributors = [
     name: 'Emma',
     cohort: 'Founder',
     role: 'Debug guru',
-    image:
-      UserImage,
+    image: UserImage,
     text: 'The instructors are the best',
   },
   {
@@ -32,8 +29,7 @@ export const contributors = [
     name: 'Emma',
     cohort: 'Founder',
     role: 'Debug guru',
-    image:
-      UserImage,
+    image: UserImage,
     text: 'The instructors are the best',
   },
   {
@@ -41,8 +37,7 @@ export const contributors = [
     name: 'Emma',
     cohort: 'Founder',
     role: 'Debug guru',
-    image:
-      UserImage,
+    image: UserImage,
     text: 'The instructors are the best',
   },
   {
@@ -50,8 +45,7 @@ export const contributors = [
     name: 'Emma',
     cohort: 'Founder',
     role: 'Debug guru',
-    image:
-      UserImage,
+    image: UserImage,
     text: 'The instructors are the best',
   },
   {
@@ -59,8 +53,7 @@ export const contributors = [
     name: 'Emma',
     cohort: 'Founder',
     role: 'Debug guru',
-    image:
-      UserImage,
+    image: UserImage,
     text: 'The instructors are the best',
   },
   {
@@ -68,8 +61,7 @@ export const contributors = [
     name: 'Emma',
     cohort: 'Founder',
     role: 'Debug guru',
-    image:
-      UserImage,
+    image: UserImage,
     text: 'The instructors are the best',
   },
   {
@@ -77,8 +69,7 @@ export const contributors = [
     name: 'Emma',
     cohort: 'Founder',
     role: 'Debug guru',
-    image:
-      UserImage,
+    image: UserImage,
     text: 'The instructors are the best',
   },
 ];
