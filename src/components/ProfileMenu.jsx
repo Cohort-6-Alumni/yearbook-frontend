@@ -44,7 +44,7 @@ const ProfileMenu = ({ user }) => {
     {
       label: 'My Account',
       icon: IoPersonCircleOutline,
-      onClick: () => navigate('/user/details'),
+      onClick: () => navigate(`/user/${user?.userId}/details`),
     },
     {
       label: 'Edit Profile',

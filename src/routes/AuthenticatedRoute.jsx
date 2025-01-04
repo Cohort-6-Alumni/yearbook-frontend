@@ -8,6 +8,7 @@ import LandingPage from '../pages/app/LandingPage.jsx';
 import Profile from '../pages/user/Profile.jsx';
 import UserAccount from '../pages/user/UserAccount.jsx';
 import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
+import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
 
 const AuthenticatedRoute = () => {
   return (
@@ -19,6 +20,7 @@ const AuthenticatedRoute = () => {
         path="/yearbook"
         element={
           <NavLayout showNav>
+            <CustomBreadcrumbs />
             <HomePage />
           </NavLayout>
         }
@@ -28,6 +30,7 @@ const AuthenticatedRoute = () => {
         path="/user/profile/:profileId/edit"
         element={
           <NavLayout showNav>
+            <CustomBreadcrumbs />
             <Profile />
           </NavLayout>
         }
@@ -37,15 +40,17 @@ const AuthenticatedRoute = () => {
         path="/public/profile/:profileId"
         element={
           <NavLayout showNav>
+            <CustomBreadcrumbs />
             <ReadOnlyProfile />
           </NavLayout>
         }
       />
       <Route
         exact
-        path="/user/details"
+        path="/user/:userId/details"
         element={
           <NavLayout showNav>
+            <CustomBreadcrumbs />
             <UserAccount />
           </NavLayout>
         }

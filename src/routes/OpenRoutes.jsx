@@ -6,6 +6,7 @@ import ForgotPassword from '../pages/user/ForgotPassword.jsx';
 import LandingPage from '../pages/app/LandingPage.jsx';
 import NavLayout from '../layout/NavLayout.jsx';
 import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
+import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
 
 const OpenRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const OpenRoutes = () => {
         path="/yearbook"
         element={
           <NavLayout showNav>
+            <CustomBreadcrumbs />
             <HomePage />
           </NavLayout>
         }
@@ -26,6 +28,7 @@ const OpenRoutes = () => {
         path="/public/profile/:profileId"
         element={
           <NavLayout showNav>
+            <CustomBreadcrumbs />
             <ReadOnlyProfile />
           </NavLayout>
         }

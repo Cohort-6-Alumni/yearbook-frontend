@@ -53,7 +53,9 @@ const ReadOnlyProfile = () => {
           </div>
           <div className={'flex space-x-1 text-nowrap'}>
             <p className={'text-sm font-semibold'}>Favourite coding snack:</p>
-            <p className={'text-sm font-normal text-wrap'}>{`${profile?.favoriteCodingSnack || ''}`}</p>
+            <p
+              className={'text-sm font-normal text-wrap'}
+            >{`${profile?.favoriteCodingSnack || ''}`}</p>
           </div>
         </div>
       </div>
@@ -109,6 +111,6 @@ const ReadOnlyProfile = () => {
       </div>
     </div>
   );
-}
+};
 
 export default ReadOnlyProfile;
