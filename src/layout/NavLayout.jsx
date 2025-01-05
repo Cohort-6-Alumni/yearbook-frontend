@@ -38,7 +38,7 @@ const NavLayout = ({ children, showNav = false }) => {
     <div className={'flex flex-col min-h-screen hide-scrollbar'}>
       {showNav && <Navbar component={child} />}
       <div className="container mx-auto max-w-5xl px-4 ">
-        <main className="flex-grow mt-12">{children}</main>
+        <main className="flex-grow mt-2">{children}</main>
       </div>
     </div>
   );
