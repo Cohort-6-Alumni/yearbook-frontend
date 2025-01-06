@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef, useEffect } from 'react';
 import UserBanner from '../../components/UserBanner.jsx';
 import avatar from '../../assets/avatar.png';
 import { GoPencil } from 'react-icons/go';
@@ -8,28 +8,66 @@ import { IoEyeOutline, IoEyeOffOutline, IoTrash, IoSaveOutline } from 'react-ico
 import { AppContext } from '../../context/contextApi';
 import { updateAccount } from '../../api';
 import toast from 'react-hot-toast';
+import ImageCropper from '../../components/ImageCropper.jsx';
+import { convertBase64 } from '../../utils/Helper.js';
 
 const UserAccount = () => {
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isUserDetailsEditable, setIsUserDetailsEditable] = useState(false);
+  const [modalIsOpen, setModal] = useState(false);
+  const [imageSrc, setImageSrc] = useState(avatar);
+  const [uploadImageData, setUploadImageData] = useState(undefined);
 
   const { getUserData, getSession, setSession } = useContext(AppContext);
 
+  const imageSelectRef = useRef();
+  const formikRef = useRef();
+  const userPicture = getUserData().picture;
+
+  console.log(userPicture);
+
+  useEffect(() => {
+    if (userPicture !== null) {
+      setImageSrc(userPicture);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (imageSrc && imageSrc !== avatar) {
+      formikRef.current.setFieldValue('picture', imageSrc);
+    }
+  }, [imageSrc]);
+
+  const closeModal = () => {
+    setUploadImageData(undefined);
+    if (userPicture === null) {
+      formikRef.current.setFieldValue('picture', undefined);
+      setModal(false);
+    }
+  };
+
+  const onSelectFile = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const base64 = await convertBase64(file);
+      setUploadImageData(base64);
+      setModal(true);
+    }
+  };
+
   return (
-    <div>
+    <>
+      {modalIsOpen && uploadImageData && (
+        <ImageCropper
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+          uploadImageData={uploadImageData}
+          setImageSrc={setImageSrc}
+        />
+      )}
       <UserBanner />
       <div className="full flex flex-col p-6">
-        <div>
-          <img
-            className="w-[120px] h-[120px] rounded-full border border-gray-300"
-            src={avatar}
-            alt="Avatar"
-          />
-          <button className="flex items-center gap-2 px-4 py-2 text-[14px]">
-            <GoPencil /> Change
-          </button>
-        </div>
         <div className="w-full">
           <Formik
             initialValues={{
@@ -38,6 +76,7 @@ const UserAccount = () => {
               lastName: getUserData().lastName,
               email: getUserData().emailId,
               password: '',
+              picture: getUserData().picture,
             }}
             validationSchema={validationSchema}
             onSubmit={async (values) => {
@@ -57,6 +96,29 @@ const UserAccount = () => {
           >
             {({ values, initialValues }) => (
               <Form>
+                <div>
+                  <img
+                    className="w-[120px] h-[120px] rounded-full border border-gray-300"
+                    src={avatar}
+                    alt="Avatar"
+                  />
+                  <button
+                    className="flex items-center gap-2 px-4 py-2 text-[14px] cursor"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      imageSelectRef.current.click();
+                    }}
+                  >
+                    <GoPencil /> Change
+                  </button>
+                  <input
+                    type="file"
+                    accept="image/jpeg"
+                    onChange={onSelectFile}
+                    ref={imageSelectRef}
+                    className="hidden"
+                  />
+                </div>
                 <div className="container mx-auto p-8">
                   <div className="flex w-full justify-between mb-4">
                     <p>User Details</p>
@@ -258,7 +320,7 @@ const UserAccount = () => {
           </Formik>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,17 +1,20 @@
 import React, { useState, useRef } from 'react';
 import Modal from 'react-modal';
+
 import { Cropper } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 
-import { resizeImage } from '../util/Helper';
+import { resizeImage } from '../utils/Helper';
+import PropTypes from 'prop-types';
 
 const ImageCropper = ({ modalIsOpen, closeModal, uploadImageData, setImageSrc }) => {
+  console.log(modalIsOpen, closeModal);
   const customStyles = {
     content: {
       top: '50%',
       left: '50%',
-      right: 'auto',
-      bottom: 'auto',
+      right: '50%',
+      bottom: '-50%',
       marginRight: '-50%',
       transform: 'translate(-50%, -50%)',
       border: 'none',
@@ -57,3 +60,10 @@ const ImageCropper = ({ modalIsOpen, closeModal, uploadImageData, setImageSrc })
 };
 
 export default ImageCropper;
+
+ImageCropper.propTypes = {
+  modalIsOpen: PropTypes.bool.isRequired,
+  closeModal: PropTypes.func.isRequired,
+  uploadImageData: PropTypes.func.isRequired,
+  setImageSrc: PropTypes.func.isRequired,
+};
