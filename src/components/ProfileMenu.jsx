@@ -31,7 +31,6 @@ const ProfileMenu = ({ user }) => {
 
   const handleEditProfile = () => {
     const userProfile = user?.profile;
-    console.log(userProfile);
     if (!userProfile) {
       setIsModalOpen(true);
     } else {

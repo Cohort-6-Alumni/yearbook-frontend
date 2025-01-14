@@ -1,4 +1,3 @@
-import CustomCard from '../../components/CustomCard.jsx';
 import { useContext, useEffect, useState } from 'react';
 import { getProfiles } from '../../api/index.js';
 import { AppContext } from '../../context/contextApi.jsx';
@@ -71,6 +70,7 @@ const HomePage = () => {
             firstName={profile?.firstName}
             lastName={profile?.lastName}
             currentRole={profile?.currentRole}
+            linkedIn={profile?.linkedIn}
           />
         ))}
       </div>

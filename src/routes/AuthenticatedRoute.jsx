@@ -1,3 +1,4 @@
+import { useEffect, useContext } from 'react';
 import { Route, Routes, Navigate } from 'react-router';
 import Login from '../pages/user/Login';
 import CompleteSignup from '../pages/app/CompleteSignUp.jsx';
@@ -10,7 +11,9 @@ import UserAccount from '../pages/user/UserAccount.jsx';
 import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
 
+
 const AuthenticatedRoute = () => {
+ 
   return (
     <Routes>
       <Route exact path="/login" element={<Login />} />
@@ -37,7 +40,7 @@ const AuthenticatedRoute = () => {
       />
       <Route
         exact
-        path="/public/profile/:profileId"
+        path="/profile/:profileId"
         element={
           <NavLayout showNav>
             <CustomBreadcrumbs />

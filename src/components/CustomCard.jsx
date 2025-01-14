@@ -17,7 +17,6 @@ const CustomCard = ({
 }) => {
   const navigate = useNavigate();
   const { getUserProfilesCxt } = useContext(AppContext);
-  console.log('CUSTOM CARD', getUserProfilesCxt());
 
   const handleClick = () => {
     navigate(`/public_profile/${id}`);
