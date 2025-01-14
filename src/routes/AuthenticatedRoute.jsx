@@ -11,9 +11,7 @@ import UserAccount from '../pages/user/UserAccount.jsx';
 import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
 
-
 const AuthenticatedRoute = () => {
- 
   return (
     <Routes>
       <Route exact path="/login" element={<Login />} />

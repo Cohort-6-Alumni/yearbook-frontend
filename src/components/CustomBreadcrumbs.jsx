@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router';
 import { IoHomeSharp } from 'react-icons/io5';
 
 const CustomBreadcrumbs = () => {
-    const location = useLocation();
+  const location = useLocation();
   return (
     // <div className="container mx-auto px-4 py-2">
     <Breadcrumbs className="text-gray-500 px-0 text-sm mb-8 bg-white" fullWidth>
@@ -30,6 +30,6 @@ const CustomBreadcrumbs = () => {
     </Breadcrumbs>
     // </div>
   );
-}
+};
 
-export default CustomBreadcrumbs
+export default CustomBreadcrumbs;

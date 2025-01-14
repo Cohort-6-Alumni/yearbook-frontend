@@ -4,7 +4,14 @@ import { Cropper } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import PropTypes from 'prop-types';
 import { resizeImage } from '../utils/Helper.js';
-import { Button, Dialog, DialogBody, DialogFooter, DialogHeader, Typography } from '@material-tailwind/react';
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  Typography,
+} from '@material-tailwind/react';
 
 const ImageCropper = ({ modalIsOpen, closeModal, uploadImageData, setImageSrc }) => {
   const cropperRef = useRef();
@@ -21,7 +28,7 @@ const ImageCropper = ({ modalIsOpen, closeModal, uploadImageData, setImageSrc })
   };
   return (
     <Dialog size="xs" open={modalIsOpen} handler={closeModal}>
-      <DialogHeader className='flex flex-col items-center'>
+      <DialogHeader className="flex flex-col items-center">
         <Typography className="text-gray-600 text-lg font-semibold mt-2 mb-2">
           Crop Photo
         </Typography>

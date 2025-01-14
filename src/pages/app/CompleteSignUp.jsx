@@ -34,7 +34,7 @@ const CompleteSignUp = () => {
         if (response.status === 200) {
           toast.success('Account created successfully!');
           navigate('/login');
-        } 
+        }
       } catch (error) {
         console.error(error);
       }

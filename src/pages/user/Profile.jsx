@@ -66,7 +66,7 @@ const Profile = () => {
       setFormData((prevData) => ({
         ...prevData,
         picture: imageSrc,
-        }));
+      }));
     }
   }, [imageSrc]);
   const fetchMembers = async () => {

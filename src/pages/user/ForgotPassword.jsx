@@ -17,7 +17,6 @@ const ForgotPassword = () => {
   }, []);
 
   const onFormSubmit = async (values) => {
-
     if (!isFetching) {
       setIsFetching(true); // Prevent multiple submissions
       // Call the API with the provided email

@@ -3,22 +3,21 @@ import { getProfiles } from '../../api/index.js';
 import { AppContext } from '../../context/contextApi.jsx';
 import ProfileCard from '../../components/ProfileCard.jsx';
 import AvatarPlaceholder from '../../assets/Profile_avatar_placeholder_large.png';
-import Loader from "../../components/Loader.jsx";
+import Loader from '../../components/Loader.jsx';
 
 const HomePage = () => {
   const { setUserProfilesCxt } = useContext(AppContext);
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(false);
 
-
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        setLoading(true)
+        setLoading(true);
         const res = await getProfiles();
         setProfiles(res?.data.content);
-        setUserProfilesCxt(res?.data.content)
-        setLoading(false)
+        setUserProfilesCxt(res?.data.content);
+        setLoading(false);
       } catch (err) {
         console.error('Error fetching profiles:', err);
       }
@@ -27,10 +26,8 @@ const HomePage = () => {
     fetchProfiles();
   }, []);
 
-  if (loading === true){
-    return (
-        <Loader/>
-    )
+  if (loading === true) {
+    return <Loader />;
   }
 
   if (profiles.length === 0) {

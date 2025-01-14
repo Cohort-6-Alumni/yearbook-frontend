@@ -1,10 +1,4 @@
-import {
-  Card,
-  CardBody,
-  CardFooter,
-  Typography,
-  Tooltip,
-} from '@material-tailwind/react';
+import { Card, CardBody, CardFooter, Typography, Tooltip } from '@material-tailwind/react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router';
 // import { useContext } from 'react';
@@ -22,7 +16,7 @@ const ProfileCard = ({
   linkedIn = '',
 }) => {
   const navigate = useNavigate();
-//   const { getUserProfilesCxt } = useContext(AppContext);
+  //   const { getUserProfilesCxt } = useContext(AppContext);
 
   const handleClick = () => {
     navigate(`/profile/${id}`);
