@@ -23,12 +23,18 @@ const UserAccount = () => {
 
   const imageSelectRef = useRef();
   const formikRef = useRef();
-  const userPicture = getUserData().picture;
 
-  console.log(userPicture);
+  let userPicture = '';
+
+    if (getUserData().picture === null) {
+      userPicture = avatar;
+    } else {
+      userPicture = getUserData().picture;
+    }
+
 
   useEffect(() => {
-    if (userPicture !== null) {
+    if (userPicture) {
       setImageSrc(userPicture);
     }
   }, []);
@@ -41,10 +47,10 @@ const UserAccount = () => {
 
   const closeModal = () => {
     setUploadImageData(undefined);
-    if (userPicture === null) {
-      formikRef.current.setFieldValue('picture', undefined);
-      setModal(false);
+    if (!userPicture) {
+      formikRef.current.setFieldValue('picture', imageSrc);
     }
+    setModal(false);
   };
 
   const onSelectFile = async (e) => {
@@ -70,13 +76,14 @@ const UserAccount = () => {
       <div className="full flex flex-col p-6">
         <div className="w-full">
           <Formik
+            innerRef={formikRef}
             initialValues={{
               firstName: getUserData().firstName,
               username: getUserData().username,
               lastName: getUserData().lastName,
               email: getUserData().emailId,
               password: '',
-              picture: getUserData().picture,
+              picture: '',
             }}
             validationSchema={validationSchema}
             onSubmit={async (values) => {
@@ -99,7 +106,7 @@ const UserAccount = () => {
                 <div>
                   <img
                     className="w-[120px] h-[120px] rounded-full border border-gray-300"
-                    src={avatar}
+                    src={imageSrc}
                     alt="Avatar"
                   />
                   <button
@@ -118,6 +125,9 @@ const UserAccount = () => {
                     ref={imageSelectRef}
                     className="hidden"
                   />
+                  <div className="hidden">
+                    <Field type="text" name="picture" id="picture" />
+                  </div>
                 </div>
                 <div className="container mx-auto p-8">
                   <div className="flex w-full justify-between mb-4">

@@ -40,6 +40,7 @@ export const updateAccount = async (token, data) => {
         Authorization: frameToken(token),
       },
     });
+    console.log(response, 'response');
     return response;
   } catch (error) {
     return error.response;
