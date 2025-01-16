@@ -5,7 +5,6 @@ import { IoHomeSharp } from 'react-icons/io5';
 const CustomBreadcrumbs = () => {
   const location = useLocation();
   return (
-    // <div className="container mx-auto px-4 py-2">
     <Breadcrumbs className="text-gray-500 px-0 text-sm mb-8 bg-white" fullWidth>
       <Link to="/" className="opacity-60 ">
         <IoHomeSharp className="inline-block h-4 w-4 " />
@@ -24,11 +23,10 @@ const CustomBreadcrumbs = () => {
       {location.pathname.search('edit') !== -1 && (
         <span className="text-gray-900 capitalize">Edit Profile</span>
       )}
-      {location.pathname.search('public') !== -1 && (
+      {location.pathname.search('/profile') !== -1 && (
         <span className="text-gray-900 capitalize">Public Profile</span>
       )}
     </Breadcrumbs>
-    // </div>
   );
 };
 

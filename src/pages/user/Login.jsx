@@ -30,8 +30,17 @@ const LoginPage = () => {
       setLoading(true);
       const response = await login(values.username, values.password);
       if (response.status === 200) {
+        setUserData({
+          username: response.data?.username,
+          role: response.data?.role,
+          userId: response.data?.userId,
+          profileId: response.data?.profile?.profileId,
+          firstName: response.data?.firstName,
+          lastName: response.data?.lastName,
+          emailId: response.data?.emailId,
+          picture: response.data?.picture,
+        });
         setSession(response.headers.authorization);
-        setUserData(response.data);
         navigate('/yearbook');
       } else {
         setLoginError(response.data.message);

@@ -30,12 +30,11 @@ const ProfileMenu = ({ user }) => {
   };
 
   const handleEditProfile = () => {
-    const userProfile = user?.profile;
-    if (!userProfile) {
+    const userProfileId = user?.profileId;
+    if (!userProfileId) {
       setIsModalOpen(true);
     } else {
-      const profileId = userProfile.profileId;
-      navigate(`/user/profile/${profileId}/edit`);
+      navigate(`/user/profile/${userProfileId}/edit`);
     }
   };
   // profile menu component

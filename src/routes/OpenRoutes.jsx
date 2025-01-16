@@ -7,6 +7,7 @@ import LandingPage from '../pages/app/LandingPage.jsx';
 import NavLayout from '../layout/NavLayout.jsx';
 import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
+import CustomFooter from '../components/CustomFooter.jsx';
 
 const OpenRoutes = () => {
   return (
@@ -17,29 +18,38 @@ const OpenRoutes = () => {
         exact
         path="/yearbook"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <HomePage />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <HomePage />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
         path="/profile/:profileId"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <ReadOnlyProfile />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <ReadOnlyProfile />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
         path="/user/forgot_password"
         element={
-          <NavLayout showNav>
-            <ForgotPassword />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <ForgotPassword />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
 

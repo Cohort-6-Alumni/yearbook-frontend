@@ -2,7 +2,7 @@ import { createContext, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import PropTypes from 'prop-types';
 
-const AppContext = createContext(null);
+const AppContext = createContext();
 
 const ContextProvider = ({ children }) => {
   const [cookies, setCookie, removeCookie] = useCookies(['appToken', 'userData']);
@@ -13,6 +13,7 @@ const ContextProvider = ({ children }) => {
     setCookie('appToken', token, {
       path: '/',
       maxAge: 3600, // 1 hour in seconds
+      sameSite: 'lax',
     });
   };
 
@@ -20,11 +21,13 @@ const ContextProvider = ({ children }) => {
     return cookies.appToken || null;
   };
 
-  const setUserData = (userData) =>
+  const setUserData = (userData) => {
     setCookie('userData', userData, {
       path: '/',
       maxAge: 3600, // 1 hour in seconds
+      sameSite: 'lax',
     });
+  };
 
   const getUserData = () => {
     return cookies.userData || null;
