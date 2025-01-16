@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL;
-console.log('API', API_URL);
 const frameToken = (token) => {
   return `Bearer ${token}`;
 };
@@ -68,6 +67,19 @@ export const getProfile = async (profileId) => {
 export const updateProfile = async (token, data) => {
   try {
     const response = await axios.post(`${API_URL}/user/update/profile`, data, {
+      headers: {
+        Authorization: frameToken(token),
+      },
+    });
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const getAllMembers = async (token) => {
+  try {
+    const response = await axios.get(`${API_URL}/members/list`, {
       headers: {
         Authorization: frameToken(token),
       },

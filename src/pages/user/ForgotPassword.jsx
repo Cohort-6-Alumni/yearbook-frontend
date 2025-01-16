@@ -17,8 +17,6 @@ const ForgotPassword = () => {
   }, []);
 
   const onFormSubmit = async (values) => {
-    console.log(values);
-
     if (!isFetching) {
       setIsFetching(true); // Prevent multiple submissions
       // Call the API with the provided email
@@ -32,7 +30,6 @@ const ForgotPassword = () => {
       // } else {
       //   formikRef.current.setFieldValue('formMessage', apiResponse.payLoad);
       // }
-      console.log('Form submitted');
       setIsFetching(false);
     }
   };

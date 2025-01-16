@@ -7,6 +7,7 @@ const AppContext = createContext(null);
 const ContextProvider = ({ children }) => {
   const [cookies, setCookie, removeCookie] = useCookies(['appToken', 'userData']);
   const [profilesCxt, setProfilesCxt] = useState([]);
+  const [membersList, setMembersList] = useState([]);
 
   const setSession = (token) => {
     setCookie('appToken', token, {
@@ -30,7 +31,6 @@ const ContextProvider = ({ children }) => {
   };
 
   const logout = () => {
-    console.log('Logging out');
     removeCookie('appToken', { path: '/' });
     removeCookie('userData', { path: '/' });
   };
@@ -39,6 +39,11 @@ const ContextProvider = ({ children }) => {
     setProfilesCxt(profiles);
   };
   const getUserProfilesCxt = () => profilesCxt;
+
+  const setMembersListCxt = (members) => {
+    setMembersList(members);
+  };
+  const getMembersListCxt = () => membersList;
 
   return (
     <AppContext.Provider
@@ -50,6 +55,8 @@ const ContextProvider = ({ children }) => {
         logout,
         setUserProfilesCxt,
         getUserProfilesCxt,
+        setMembersListCxt,
+        getMembersListCxt,
       }}
     >
       {children}

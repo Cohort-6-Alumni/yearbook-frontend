@@ -34,11 +34,9 @@ const CompleteSignUp = () => {
         if (response.status === 200) {
           toast.success('Account created successfully!');
           navigate('/login');
-        } else {
-          console.log(response.data.message);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     },
   });

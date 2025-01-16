@@ -25,7 +25,7 @@ const OpenRoutes = () => {
       />
       <Route
         exact
-        path="/public/profile/:profileId"
+        path="/profile/:profileId"
         element={
           <NavLayout showNav>
             <CustomBreadcrumbs />

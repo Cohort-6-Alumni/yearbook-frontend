@@ -1,23 +1,19 @@
-import React, { useState, useRef } from 'react';
-import Modal from 'react-modal';
+import { useState, useRef } from 'react';
+// import Modal from 'react-modal';
 import { Cropper } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
-
-import { resizeImage } from '../util/Helper';
+import PropTypes from 'prop-types';
+import { resizeImage } from '../utils/Helper.js';
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
+  Typography,
+} from '@material-tailwind/react';
 
 const ImageCropper = ({ modalIsOpen, closeModal, uploadImageData, setImageSrc }) => {
-  const customStyles = {
-    content: {
-      top: '50%',
-      left: '50%',
-      right: 'auto',
-      bottom: 'auto',
-      marginRight: '-50%',
-      transform: 'translate(-50%, -50%)',
-      border: 'none',
-      backgroundColor: 'transparent',
-    },
-  };
   const cropperRef = useRef();
   const [image] = useState(uploadImageData);
 
@@ -31,29 +27,34 @@ const ImageCropper = ({ modalIsOpen, closeModal, uploadImageData, setImageSrc })
     }
   };
   return (
-    <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles}>
-      <div className="bg-white shadow rounded-lg mb-6 p-5">
-        <div className="text-gray-600 text-lg font-semibold mt-2 mb-7">Crop Photo</div>
+    <Dialog size="xs" open={modalIsOpen} handler={closeModal}>
+      <DialogHeader className="flex flex-col items-center">
+        <Typography className="text-gray-600 text-lg font-semibold mt-2 mb-2">
+          Crop Photo
+        </Typography>
+      </DialogHeader>
 
+      <DialogBody>
         <Cropper ref={cropperRef} src={image} className={'cropper'} aspectRatio={1} />
+      </DialogBody>
 
-        <footer className="flex justify-end mt-8 gap-2">
-          <button
-            className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-gray-400 rounded-md hover:bg-gray-600 focus:outline-none focus:bg-purple-400 focus:ring focus:ring-purple-300 focus:ring-opacity-50"
-            onClick={closeModal}
-          >
-            Cancel
-          </button>
-          <button
-            className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-purple-600 rounded-md hover:bg-purple-400 focus:outline-none focus:bg-purple-400 focus:ring focus:ring-purple-300 focus:ring-opacity-50"
-            onClick={cropImage}
-          >
-            Crop
-          </button>
-        </footer>
-      </div>
-    </Modal>
+      <DialogFooter className="flex justify-end mt-8 gap-2">
+        <Button color="blue" fullWidth onClick={cropImage}>
+          Crop
+        </Button>
+        <Button color="red" fullWidth variant="filled" onClick={closeModal}>
+          Cancel
+        </Button>
+      </DialogFooter>
+    </Dialog>
   );
+};
+
+ImageCropper.propTypes = {
+  modalIsOpen: PropTypes.bool,
+  closeModal: PropTypes.func,
+  uploadImageData: PropTypes.string,
+  setImageSrc: PropTypes.func,
 };
 
 export default ImageCropper;
