@@ -20,11 +20,11 @@ const CustomBreadcrumbs = () => {
       {location.pathname.search('details') !== -1 && (
         <span className="text-gray-900 capitalize">User Details</span>
       )}
+      {location.pathname.search('edit') == -1 && location.pathname.search('profile') !== -1 && (
+        <span className="text-gray-900 capitalize">Public Profile</span>
+      )}
       {location.pathname.search('edit') !== -1 && (
         <span className="text-gray-900 capitalize">Edit Profile</span>
-      )}
-      {location.pathname.search('/profile') !== -1 && (
-        <span className="text-gray-900 capitalize">Public Profile</span>
       )}
     </Breadcrumbs>
   );
