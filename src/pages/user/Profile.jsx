@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import UserBanner from '../../components/UserBanner.jsx';
 import avatar from '../../assets/avatar.png';
 import { Accordion, AccordionHeader, AccordionBody, Button } from '@material-tailwind/react';
@@ -6,29 +6,60 @@ import { CiEdit } from 'react-icons/ci';
 import { toast } from 'react-hot-toast';
 import { AppContext } from '../../context/contextApi.jsx';
 import { updateProfile, getProfile } from '../../api';
+import { GoPencil } from 'react-icons/go';
 import ProfileData from '../../data/ProfileData.js';
 import { useParams } from 'react-router';
+import ImageCropper from '../../components/ImageCropper.jsx';
+import { convertBase64 } from '../../utils/Helper.js';
 
 const Profile = () => {
   const [open, setOpen] = useState(0);
   const { getUserData, getSession } = useContext(AppContext);
   const { profileId } = useParams();
   const [formData, setFormData] = useState({});
+  const [modalIsPOpen, setModal] = useState(false);
+  const [imageSrc, setImageSrc] = useState(avatar);
+  const [uploadImageData, setUploadImageData] = useState(undefined);
+  const imageSelectRef = useRef();
+
+  const fetchProfile = async () => {
+    try {
+      const response = await getProfile(profileId);
+      console.log('data', response.data);
+      setFormData(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
     console.log('Profile ID:', profileId);
     fetchProfile();
   }, []);
 
-  const fetchProfile = async () => {
-    try {
-      const response = await getProfile(profileId);
-      console.log("data",response.data);
-      setFormData(response.data);
-    } catch (error) {
-      console.log(error);
+  let userPicture = '';
+
+  if (formData.picture === null) {
+    userPicture = avatar;
+  } else {
+    userPicture = formData.picture;
+  }
+
+  useEffect(() => {
+    if (userPicture) {
+      setImageSrc(userPicture);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (imageSrc && imageSrc !== avatar) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        picture: imageSrc,
+      }));
+    }
+  }, [imageSrc]);
+
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
 
   const handleChange = (e) => {
@@ -41,6 +72,7 @@ const Profile = () => {
 
   const handleSubmit = async () => {
     console.log('Form Data:', formData);
+    closeModal();
 
     if (
       formData.lastWords === '' ||
@@ -53,7 +85,7 @@ const Profile = () => {
       // formData.mostLikelyToQuestion === '' ||
       // formData.mostLikelyToAnswer === '' ||
       formData.previousField === '' ||
-      formData.favouriteCodingSnack === '' 
+      formData.favouriteCodingSnack === ''
       // formData.favoriteQuote === ''
       // formData.linkedin === '' ||
       // formData.instagram === '' ||
@@ -75,8 +107,37 @@ const Profile = () => {
     }
   };
 
+  const closeModal = () => {
+    setUploadImageData(undefined);
+    if (!formData.picture) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        picture: imageSrc,
+      }));
+      setImageSrc(userPicture);
+    }
+    setModal(false);
+  };
+
+  const onSelectFile = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const base64 = await convertBase64(file);
+      setUploadImageData(base64);
+      setModal(true);
+    }
+  };
+
   return (
     <div className={'w-full flex flex-col'}>
+      {modalIsPOpen && uploadImageData && (
+        <ImageCropper
+          modalIsOpen={modalIsPOpen}
+          closeModal={closeModal}
+          uploadImageData={uploadImageData}
+          setImageSrc={setImageSrc}
+        />
+      )}
       <UserBanner />
       <div className="full flex flex-col ">
         <div className={'flex w-full justify-between items-center'}>
@@ -86,6 +147,22 @@ const Profile = () => {
                 className="w-[120px] h-[120px] rounded-full border border-gray-300"
                 src={avatar}
                 alt="Avatar"
+              />
+              <button
+                className="flex items-center gap-2 px-4 py-2 text-[14px] cursor"
+                onClick={(e) => {
+                  e.preventDefault();
+                  imageSelectRef.current.click();
+                }}
+              >
+                <GoPencil /> Change
+              </button>
+              <input
+                type="file"
+                accept="image/jpeg"
+                onChange={onSelectFile}
+                ref={imageSelectRef}
+                className="hidden"
               />
             </div>
 
@@ -161,7 +238,10 @@ const Profile = () => {
 
               {/* Favourite */}
               <div>
-                <label htmlFor="favouriteCodingSnack" className="block text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="favouriteCodingSnack"
+                  className="block text-sm font-medium text-gray-700"
+                >
                   Favourite coding snack
                 </label>
                 <input
