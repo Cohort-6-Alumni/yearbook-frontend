@@ -17,6 +17,8 @@ import { updateProfile, getProfile, getAllMembers } from '../../api';
 import { useParams } from 'react-router';
 import { convertBase64 } from '../../utils/Helper.js';
 import ImageCropper from '../../components/ImageCropper';
+import Loader from '../../components/Loader.jsx';
+import { s } from 'framer-motion/client';
 
 const Profile = () => {
   const [open, setOpen] = useState(-1);
@@ -38,8 +40,13 @@ const Profile = () => {
   //  }, []);
 
   useEffect(() => {
-    fetchMembers();
-    fetchProfile();
+    const fetchData = () => {
+      fetchMembers();
+      const profile = fetchProfile();
+      setFormData(profile);
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -59,31 +66,29 @@ const Profile = () => {
     if (formData?.picture) {
       setImageSrc(formData?.picture);
     }
-  }, []);
+  }, [formData?.picture]);
 
-  useEffect(() => {
-    if (imageSrc && imageSrc !== AvatarPlaceHolder) {
-      setFormData((prevData) => ({
-        ...prevData,
-        picture: imageSrc,
-      }));
-    }
-  }, [imageSrc]);
   const fetchMembers = async () => {
+    setIsFetching(true);
     try {
       const res = await getAllMembers(token);
       setMembersListCxt(res?.data);
     } catch (err) {
       console.error('Error fetching members:', err);
+    } finally {
+      setIsFetching(false);
     }
   };
 
   const fetchProfile = async () => {
+    setIsFetching(true);
     try {
       const response = await getProfile(profileId);
       setFormData(response.data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsFetching(false);
     }
   };
   const handleOpen = (value) => setOpen(open === value ? -1 : value);
@@ -133,7 +138,7 @@ const Profile = () => {
   const options = getMembersListCxt();
 
   const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(formData.mostLikelyToAnswer?.toLowerCase())
+    option.toLowerCase().includes(formData?.mostLikelyToAnswer?.toLowerCase())
   );
   const closeModal = () => {
     setUploadImageData(undefined);
@@ -154,6 +159,10 @@ const Profile = () => {
       setIsOpen(true);
     }
   };
+
+  if (isFetching) {
+    return <Loader />;
+  }
   return (
     <>
       {modalIsOpen && uploadImageData && (
@@ -193,7 +202,7 @@ const Profile = () => {
                   <p
                     className={'text-[14px] font-semibold mb-1'}
                   >{`${getUserData().firstName} ${getUserData().lastName}`}</p>
-                  <p className={'text-[14px] font-light'}>{formData.currentRole || ''}</p>
+                  <p className={'text-[14px] font-light'}>{formData?.currentRole || ''}</p>
                 </div>
               </div>
             </div>
@@ -215,7 +224,7 @@ const Profile = () => {
                     type="text"
                     id="currentRole"
                     placeholder="Product Management"
-                    value={formData.currentRole || ''}
+                    value={formData?.currentRole || ''}
                     onChange={handleChange}
                     className={
                       'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
@@ -234,7 +243,7 @@ const Profile = () => {
                     type="text"
                     id="previousField"
                     placeholder="Product Management"
-                    value={formData.previousField || ''}
+                    value={formData?.previousField || ''}
                     onChange={handleChange}
                     className={
                       'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
@@ -251,7 +260,7 @@ const Profile = () => {
                     type="text"
                     id="hobbies"
                     placeholder="Cooking, reading"
-                    value={formData.hobbies || ''}
+                    value={formData?.hobbies || ''}
                     onChange={handleChange}
                     className={
                       'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
@@ -268,7 +277,7 @@ const Profile = () => {
                     type="text"
                     id="interests"
                     placeholder="Public speaking, Tech"
-                    value={formData.interests || ''}
+                    value={formData?.interests || ''}
                     onChange={handleChange}
                     className={
                       'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
@@ -288,7 +297,7 @@ const Profile = () => {
                     type="text"
                     id="favoriteCodingSnack"
                     placeholder="coffee, water"
-                    value={formData.favoriteCodingSnack || ''}
+                    value={formData?.favoriteCodingSnack || ''}
                     onChange={handleChange}
                     className={
                       'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
@@ -305,7 +314,7 @@ const Profile = () => {
                     type="text"
                     id="bio"
                     placeholder="I live for positive impact"
-                    value={formData.bio || ''}
+                    value={formData?.bio || ''}
                     onChange={handleChange}
                     className={
                       'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
@@ -320,7 +329,7 @@ const Profile = () => {
                     type="text"
                     id="instagram"
                     placeholder="profileName"
-                    value={formData.instagram || ''}
+                    value={formData?.instagram || ''}
                     onChange={handleChange}
                     className={
                       'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
@@ -335,7 +344,7 @@ const Profile = () => {
                     type="text"
                     id="linkedIn"
                     placeholder="www.linkedin.com/in/firstname-lastname"
-                    value={formData.linkedIn || ''}
+                    value={formData?.linkedIn || ''}
                     onChange={handleChange}
                     className={
                       'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
@@ -357,7 +366,7 @@ const Profile = () => {
                       mount: { y: 0 },
                       unmount: { y: 50 },
                     }}
-                    value={formData.mostLikelyToQuestion || ''}
+                    value={formData?.mostLikelyToQuestion || ''}
                     onChange={(val) =>
                       handleChange({ target: { id: 'mostLikelyToQuestion', value: val } })
                     }
@@ -394,11 +403,11 @@ const Profile = () => {
                       type="text"
                       id="mostLikelyToAnswer"
                       placeholder="Type to search..."
-                      value={formData.mostLikelyToAnswer || ''}
+                      value={formData?.mostLikelyToAnswer || ''}
                       onChange={handleChange}
                       onClick={() => setOpenMenu(true)}
                       className="mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3"
-                      disabled={formData.mostLikelyToQuestion === ''}
+                      disabled={formData?.mostLikelyToQuestion === ''}
                     />
                     {openMenu && (
                       <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto">
@@ -446,7 +455,7 @@ const Profile = () => {
                       placeholder="Enter your message"
                       rows="4"
                       className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
-                      value={formData.favoriteQuote || ''}
+                      value={formData?.favoriteQuote || ''}
                       onChange={handleChange}
                     />
                   </AccordionBody>
@@ -464,7 +473,7 @@ const Profile = () => {
                       placeholder="Enter your message"
                       rows="4"
                       className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
-                      value={formData.mostMemorableBootcampMoment || ''}
+                      value={formData?.mostMemorableBootcampMoment || ''}
                       onChange={handleChange}
                     />
                   </AccordionBody>
@@ -481,7 +490,7 @@ const Profile = () => {
                       id="lastWords"
                       placeholder="Enter your message"
                       rows="4"
-                      value={formData.lastWords || ''}
+                      value={formData?.lastWords || ''}
                       onChange={handleChange}
                       className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
                     />
@@ -499,7 +508,7 @@ const Profile = () => {
                       id="adviceForFutureCohort"
                       placeholder="Enter your message"
                       rows="4"
-                      value={formData.adviceForFutureCohort || ''}
+                      value={formData?.adviceForFutureCohort || ''}
                       onChange={handleChange}
                       className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
                     />
@@ -517,7 +526,7 @@ const Profile = () => {
                       id="biggestChallenge"
                       placeholder="Enter your message"
                       rows="4"
-                      value={formData.biggestChallenge || ''}
+                      value={formData?.biggestChallenge || ''}
                       onChange={handleChange}
                       className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
                     />

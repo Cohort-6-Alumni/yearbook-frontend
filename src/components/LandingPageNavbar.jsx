@@ -36,22 +36,22 @@ const LandingPageNavbar = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 ></path>
               </svg>
             </button>
 
             <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10">
-              <Link
+              {/* <Link
                 to="/"
                 className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
                 aria-current="page"
               >
                 Home
-              </Link>
+              </Link> */}
               <Link
                 to="/about"
                 className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"

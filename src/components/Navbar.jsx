@@ -8,7 +8,7 @@ const Navbar = ({ component }) => {
   const location = useLocation();
 
   return (
-    <nav className="sticky top-0 z-10 bg-white pt-6">
+    <nav className="sticky top-0 z-10 bg-white pt-1 border-b border-gray-200">
       <div className="container mx-auto px-4 py-1 flex justify-between items-center">
         <Link to={'/'}>
           <img className="w-[60px] h-[60px] border-gray-300" src={logo} alt="Logo" />

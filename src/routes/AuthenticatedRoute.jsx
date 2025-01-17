@@ -10,6 +10,7 @@ import Profile from '../pages/user/Profile.jsx';
 import UserAccount from '../pages/user/UserAccount.jsx';
 import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
+import CustomFooter from '../components/CustomFooter.jsx';
 
 const AuthenticatedRoute = () => {
   return (
@@ -20,49 +21,64 @@ const AuthenticatedRoute = () => {
         exact
         path="/yearbook"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <HomePage />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <HomePage />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
         path="/user/profile/:profileId/edit"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <Profile />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <Profile />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
         path="/profile/:profileId"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <ReadOnlyProfile />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <ReadOnlyProfile />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
         path="/user/:userId/details"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <UserAccount />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <UserAccount />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
         path="/user/forgotPassword"
         element={
-          <NavLayout showNav>
-            <ForgotPassword />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <ForgotPassword />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
 
