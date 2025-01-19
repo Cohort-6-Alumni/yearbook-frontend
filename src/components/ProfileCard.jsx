@@ -1,4 +1,4 @@
-import { Card, CardBody, CardFooter, Typography, Tooltip } from '@material-tailwind/react';
+import { Card, CardBody, CardFooter, Typography, Tooltip, CardHeader } from '@material-tailwind/react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router';
 // import { useContext } from 'react';
@@ -22,21 +22,21 @@ const ProfileCard = ({
     navigate(`/profile/${id}`);
   };
   return (
-    <Card className="max-w-xs mx-auto cursor-pointer" onClick={handleClick}>
-      <img
-        src={picture}
-        alt="profile-picture"
-        className="object-cover w-[200px] h-[150px] mx-auto rounded-t-lg"
-      />
-      <CardBody className="text-center pt-1">
-        <Typography variant="h6" color="blue-gray" className="mb-1">
+    <Card className="max-w-xs mx-auto h-80 cursor-pointer" onClick={handleClick}>
+      <CardBody className="text-center pt-6">
+        <img
+          src={picture}
+          alt="profile-picture"
+          className="object-cover w-[200px] h-[150px] mx-auto rounded-t-lg"
+        />
+        <Typography variant="h6" color="blue-gray" className="my-1">
           {`${firstName} ${lastName}`}
         </Typography>
         <Typography color="blue-gray" className="font-light text-sm">
           {currentRole}
         </Typography>
       </CardBody>
-      <CardFooter className="flex justify-center gap-4 pb-4 pt-1">
+      {/* <CardFooter className="flex justify-center gap-4 pb-4 pt-1">
         {linkedIn && (
           <Tooltip content="LinkedIn">
             <a href={linkedIn} target="_blank" rel="noreferrer">
@@ -51,6 +51,28 @@ const ProfileCard = ({
             </a>
           </Tooltip>
         )}
+      </CardFooter> */}
+      <CardFooter className="flex justify-center gap-4 pb-4 pt-1">
+        <Tooltip content="LinkedIn">
+          <a
+            href={linkedIn || '#'}
+            target={linkedIn ? '_blank' : '_self'}
+            rel="noreferrer"
+            className={!linkedIn ? 'opacity-50 pointer-events-none' : ''}
+          >
+            <img src={linkedinLogo} alt="LinkedIn" className="w-5 h-5" />
+          </a>
+        </Tooltip>
+        <Tooltip content="Instagram">
+          <a
+            href={instagram || '#'}
+            target={instagram ? '_blank' : '_self'}
+            rel="noreferrer"
+            className={!instagram ? 'opacity-50 pointer-events-none' : ''}
+          >
+            <img src={instagramLogo} alt="Instagram" className="w-5 h-5" />
+          </a>
+        </Tooltip>
       </CardFooter>
     </Card>
   );
