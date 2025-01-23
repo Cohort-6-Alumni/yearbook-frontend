@@ -26,12 +26,11 @@ const UserAccount = () => {
 
   let userPicture = '';
 
-    if (getUserData().picture === null) {
-      userPicture = avatar;
-    } else {
-      userPicture = getUserData().picture;
-    }
-
+  if (getUserData().picture === null) {
+    userPicture = avatar;
+  } else {
+    userPicture = getUserData().picture;
+  }
 
   useEffect(() => {
     if (userPicture) {

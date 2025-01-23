@@ -46,7 +46,7 @@ const CustomFooter = () => {
             <Typography
               as="a"
               href="mailto:support@obsidialumniyearbook.com"
-              target='_blank'
+              target="_blank"
               rel="noreferrer"
               color="white"
               className="font-normal transition-colors hover:text-blue-500"
