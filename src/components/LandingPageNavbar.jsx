@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router';
 
 const LandingPageNavbar = () => {
@@ -20,9 +19,9 @@ const LandingPageNavbar = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M4 8h16M4 16h16"
                 ></path>
               </svg>

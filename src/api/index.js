@@ -24,7 +24,20 @@ export const completeSignUp = async (token, password) => {
 export const login = async (username, password) => {
   try {
     const response = await axios.post(`${API_URL}/user/login`, { username, password });
-    return response;
+    return {
+      status: response.status,
+      auth: response.headers.authorization,
+      data: {
+        username: response.data?.username,
+        role: response.data?.role,
+        userId: response.data?.userId,
+        profileId: response.data?.profile?.profileId,
+        firstName: response.data?.firstName,
+        lastName: response.data?.lastName,
+        emailId: response.data?.emailId,
+        picture: response.data?.picture,
+      },
+    };
   } catch (error) {
     return error.response;
   }
@@ -39,7 +52,19 @@ export const updateAccount = async (token, data) => {
         Authorization: frameToken(token),
       },
     });
-    return response;
+    return {
+      status: response.status,
+      data: {
+        username: response.data?.username,
+        role: response.data?.role,
+        userId: response.data?.userId,
+        profileId: response.data?.profile?.profileId,
+        firstName: response.data?.firstName,
+        lastName: response.data?.lastName,
+        emailId: response.data?.emailId,
+        picture: response.data?.picture,
+      },
+    };
   } catch (error) {
     return error.response;
   }

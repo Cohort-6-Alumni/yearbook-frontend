@@ -5,7 +5,7 @@ import { IoHomeSharp } from 'react-icons/io5';
 const CustomBreadcrumbs = () => {
   const location = useLocation();
   return (
-    <Breadcrumbs className="text-gray-500 px-0 text-sm mb-8 bg-white" fullWidth>
+    <Breadcrumbs className="text-gray-500 text-sm mb-8 bg-white" fullWidth>
       <Link to="/" className="opacity-60 ">
         <IoHomeSharp className="inline-block h-4 w-4 " />
       </Link>

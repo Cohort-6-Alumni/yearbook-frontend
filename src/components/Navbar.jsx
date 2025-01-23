@@ -4,7 +4,7 @@ import { useLocation, Link } from 'react-router';
 import PropTypes from 'prop-types';
 // import { Navbar } from '@material-tailwind/react';
 
-const Navbar = ({ component }) => {
+const Navbar = ({ component, onSearch }) => {
   const location = useLocation();
 
   return (
@@ -18,7 +18,8 @@ const Navbar = ({ component }) => {
             <input
               type="text"
               placeholder="Search..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none"
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-900 focus:outline-none"
+              onChange={(e) => onSearch(e.target.value)}
             />
             <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
           </div>
@@ -31,6 +32,7 @@ const Navbar = ({ component }) => {
 
 Navbar.propTypes = {
   component: PropTypes.node,
+  onSearch: PropTypes.func.isRequired,
 };
 
 export default Navbar;
