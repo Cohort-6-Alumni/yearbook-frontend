@@ -1,4 +1,4 @@
-import React, { createElement } from 'react';
+import React, { createElement, useEffect, useState } from 'react';
 import {
   Typography,
   Button,
@@ -18,8 +18,14 @@ import ProfileModal from './ProfileModal';
 const ProfileMenu = ({ user }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [profilePicture, setProfilePicture] = useState(user?.picture || AvatarPlaceholder);
+
   const { logout } = React.useContext(AppContext);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setProfilePicture(user?.picture || AvatarPlaceholder);
+  }, [user]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -70,7 +76,7 @@ const ProfileMenu = ({ user }) => {
               size="sm"
               alt="user image"
               className="border border-gray-900 p-0.5 w-12 h-12"
-              src={user?.avatar || AvatarPlaceholder}
+              src={profilePicture}
             />
             <div className="flex flex-col">
               <Typography

@@ -11,8 +11,10 @@ import UserAccount from '../pages/user/UserAccount.jsx';
 import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
 import CustomFooter from '../components/CustomFooter.jsx';
+import useTokenExpiry from '../hooks/useTokenExpiry.jsx';
 
 const AuthenticatedRoute = () => {
+  useTokenExpiry();
   return (
     <Routes>
       <Route exact path="/login" element={<Login />} />

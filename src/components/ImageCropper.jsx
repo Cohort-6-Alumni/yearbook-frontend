@@ -34,7 +34,7 @@ const ImageCropper = ({ modalIsOpen, closeModal, uploadImageData, setImageSrc })
         </Typography>
       </DialogHeader>
 
-      <DialogBody>
+      <DialogBody className="overflow-scroll">
         <Cropper ref={cropperRef} src={image} className={'cropper'} aspectRatio={1} />
       </DialogBody>
 

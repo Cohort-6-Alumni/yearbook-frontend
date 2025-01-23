@@ -1,6 +1,5 @@
 import { useState, useContext, useRef, useEffect } from 'react';
 import UserBanner from '../../components/UserBanner.jsx';
-import avatar from '../../assets/avatar.png';
 import { GoPencil } from 'react-icons/go';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { validationSchema } from '../../utils/schema/profileSchema.js';
@@ -10,16 +9,18 @@ import { updateAccount } from '../../api';
 import toast from 'react-hot-toast';
 import ImageCropper from '../../components/ImageCropper.jsx';
 import { convertBase64 } from '../../utils/Helper.js';
+import AvatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
+
 
 const UserAccount = () => {
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isUserDetailsEditable, setIsUserDetailsEditable] = useState(false);
   const [modalIsOpen, setModal] = useState(false);
-  const [imageSrc, setImageSrc] = useState(avatar);
+  const [imageSrc, setImageSrc] = useState(AvatarPlaceHolder);
   const [uploadImageData, setUploadImageData] = useState(undefined);
 
-  const { getUserData, getSession, setSession } = useContext(AppContext);
+  const { getUserData, getSession, setUserData } = useContext(AppContext);
 
   const imageSelectRef = useRef();
   const formikRef = useRef();
@@ -27,7 +28,7 @@ const UserAccount = () => {
   let userPicture = '';
 
   if (getUserData().picture === null) {
-    userPicture = avatar;
+    userPicture = AvatarPlaceHolder;
   } else {
     userPicture = getUserData().picture;
   }
@@ -39,7 +40,7 @@ const UserAccount = () => {
   }, []);
 
   useEffect(() => {
-    if (imageSrc && imageSrc !== avatar) {
+    if (imageSrc && imageSrc !== AvatarPlaceHolder) {
       formikRef.current.setFieldValue('picture', imageSrc);
     }
   }, [imageSrc]);
@@ -82,14 +83,14 @@ const UserAccount = () => {
               lastName: getUserData().lastName,
               email: getUserData().emailId,
               password: '',
-              picture: '',
+              picture: userPicture,
             }}
             validationSchema={validationSchema}
             onSubmit={async (values) => {
               try {
                 const response = await updateAccount(getSession(), values);
                 if (response.status === 200) {
-                  setSession(response);
+                  setUserData(response.data);
                   toast.success('Profile updated successfully');
                 }
               } catch (error) {

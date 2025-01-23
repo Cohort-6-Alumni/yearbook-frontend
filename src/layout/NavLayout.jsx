@@ -19,7 +19,7 @@ const NavLayout = ({ children, showNav = false }) => {
       setUser(userData);
     };
     fetchUser();
-  }, [getUserData, user]);
+  }, []);
 
   const handleLogin = () => {
     navigate('/login');
