@@ -1,35 +1,94 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useRef } from 'react';
 import UserBanner from '../../components/UserBanner.jsx';
-import avatar from '../../assets/avatar.png';
-import { Accordion, AccordionHeader, AccordionBody, Button } from '@material-tailwind/react';
+import AvatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
+import {
+  Accordion,
+  AccordionHeader,
+  AccordionBody,
+  Button,
+  Select,
+  Option,
+} from '@material-tailwind/react';
 import { CiEdit } from 'react-icons/ci';
 import { toast } from 'react-hot-toast';
 import { AppContext } from '../../context/contextApi.jsx';
-import { updateProfile, getProfile } from '../../api';
-import ProfileData from '../../data/ProfileData.js';
+import { updateProfile, getProfile, getAllMembers } from '../../api';
 import { useParams } from 'react-router';
+import { convertBase64 } from '../../utils/Helper.js';
+import ImageCropper from '../../components/ImageCropper';
+import Loader from '../../components/Loader.jsx';
 
 const Profile = () => {
-  const [open, setOpen] = useState(0);
-  const { getUserData, getSession } = useContext(AppContext);
+  const [open, setOpen] = useState(-1);
+  const { getUserData, getSession, setMembersListCxt, getMembersListCxt } = useContext(AppContext);
   const { profileId } = useParams();
   const [formData, setFormData] = useState({});
+  const [openMenu, setOpenMenu] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [modalIsOpen, setIsOpen] = useState(false);
+  const [uploadImageData, setUploadImageData] = useState(undefined);
+  const [imageSrc, setImageSrc] = useState(AvatarPlaceHolder);
+  const imageSelectRef = useRef();
+  const menuRef = useRef(null);
+  const token = getSession();
 
   useEffect(() => {
-    console.log('Profile ID:', profileId);
-    fetchProfile();
+    const fetchData = async () => {
+      await fetchMembers();
+      await fetchProfile();
+    };
+
+    fetchData();
   }, []);
 
-  const fetchProfile = async () => {
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setOpenMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [menuRef]);
+
+  useEffect(() => {
+    if (formData?.picture) {
+      setImageSrc(formData.picture);
+    }
+  }, [formData?.picture]);
+
+  useEffect(() => {
+    document.title = 'User Profile | Yearbook';
+  }, []);
+
+  const fetchMembers = async () => {
+    setIsFetching(true);
     try {
-      const response = await getProfile(profileId);
-      console.log("data",response.data);
-      setFormData(response.data);
-    } catch (error) {
-      console.log(error);
+      const res = await getAllMembers(token);
+      setMembersListCxt(res?.data);
+    } catch (err) {
+      console.error('Error fetching members:', err);
+    } finally {
+      setIsFetching(false);
     }
   };
-  const handleOpen = (value) => setOpen(open === value ? 0 : value);
+
+  const fetchProfile = async () => {
+    setIsFetching(true);
+    try {
+      const response = await getProfile(profileId);
+      setFormData(response.data);
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    } finally {
+      setIsFetching(false);
+    }
+  };
+
+  const handleOpen = (value) => setOpen(open === value ? -1 : value);
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -40,268 +99,269 @@ const Profile = () => {
   };
 
   const handleSubmit = async () => {
-    console.log('Form Data:', formData);
+    const requiredFields = [
+      'previousField',
+      'currentRole',
+      'favoriteCodingSnack',
+      'lastWords',
+      'adviceForFutureCohort',
+      'bio',
+      'hobbies',
+      'interests',
+    ];
 
-    if (
-      formData.lastWords === '' ||
-      formData.adviceForFutureCohort === '' ||
-      formData.bio === '' ||
-      formData.hobbies === '' ||
-      formData.biggestChallenge === '' ||
-      formData.mostMemorableBootcampMoment === '' ||
-      formData.interests === '' ||
-      // formData.mostLikelyToQuestion === '' ||
-      // formData.mostLikelyToAnswer === '' ||
-      formData.previousField === '' ||
-      formData.favouriteCodingSnack === '' 
-      // formData.favoriteQuote === ''
-      // formData.linkedin === '' ||
-      // formData.instagram === '' ||
-      // formData.picture === ''
-    ) {
+    const isFormValid = requiredFields.every((field) => formData[field]);
+
+    if (!isFormValid) {
       toast.error('Please complete all fields');
-    } else {
-      try {
-        const token = getSession();
-        const response = await updateProfile(token, formData);
-        console.log(response);
-        if (response.status === 200) {
-          toast.success('Profile updated successfully');
-        }
-      } catch (error) {
-        console.log(error);
-        toast.error('An error occurred. Please try again');
+      return;
+    }
+
+    try {
+      const response = await updateProfile(token, formData);
+      if (response.status === 200) {
+        toast.success('Profile updated successfully');
       }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error('An error occurred. Please try again');
     }
   };
 
+  const options = getMembersListCxt();
+
+  const filteredOptions = options.filter((option) =>
+    option.toLowerCase().includes(formData?.mostLikelyToAnswer?.toLowerCase())
+  );
+
+  const closeModal = () => {
+    setUploadImageData(undefined);
+    if (!formData?.picture) {
+      setFormData((prevData) => ({
+        ...prevData,
+        picture: undefined,
+      }));
+    }
+    setIsOpen(false);
+  };
+
+  const onSelectFile = async (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      const base64 = await convertBase64(file);
+      setUploadImageData(base64);
+      setFormData((prevData) => ({
+        ...prevData,
+        picture: base64,
+      }));
+      setIsOpen(true);
+    }
+  };
+
+  if (isFetching) {
+    return <Loader />;
+  }
+
   return (
-    <div className={'w-full flex flex-col'}>
-      <UserBanner />
-      <div className="full flex flex-col ">
-        <div className={'flex w-full justify-between items-center'}>
-          <div className={'flex justify-center space-x-4'}>
+    <>
+      {modalIsOpen && uploadImageData && (
+        <ImageCropper
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+          uploadImageData={uploadImageData}
+          setImageSrc={setImageSrc}
+        />
+      )}
+      <div className="w-full flex flex-col">
+        <UserBanner />
+        <div className="full flex flex-col">
+          <div className="flex w-full justify-between items-center">
+            <div className="flex justify-center space-x-4">
+              <div>
+                <img
+                  className="w-[120px] h-[120px] rounded-full border border-gray-300 hover:border-purple-600 hover:border-2 cursor-pointer"
+                  src={imageSrc}
+                  alt="Avatar"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    imageSelectRef.current.click();
+                  }}
+                />
+                <input
+                  type="file"
+                  accept="image/jpeg"
+                  onChange={onSelectFile}
+                  ref={imageSelectRef}
+                  className="hidden"
+                />
+              </div>
+              <div className="flex pt-6">
+                <div>
+                  <p className="text-[14px] font-semibold mb-1">
+                    {`${getUserData().firstName} ${getUserData().lastName}`}
+                  </p>
+                  <p className="text-[14px] font-light">{formData?.currentRole || ''}</p>
+                </div>
+              </div>
+            </div>
             <div>
-              <img
-                className="w-[120px] h-[120px] rounded-full border border-gray-300"
-                src={avatar}
-                alt="Avatar"
-              />
-            </div>
-
-            <div className={'flex pt-6'}>
-              <div>
-                <p
-                  className={'text-[14px] font-semibold mb-1'}
-                >{`${getUserData().firstName} ${getUserData().lastName}`}</p>
-                <p className={'text-[14px] font-light'}>Product Designer</p>
-              </div>
+              <Button size="lg" className="bg-[#118B50]" onClick={handleSubmit}>
+                Save
+              </Button>
             </div>
           </div>
-          <div>
-            <Button size="lg" className="bg-[#118B50]" onClick={handleSubmit}>
-              Save
-            </Button>
-          </div>
-        </div>
-
-        <div className="w-full">
-          <div className="container mx-auto p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Previous Field */}
-              <div>
-                <label htmlFor="previousField" className="block text-sm font-medium text-gray-700">
-                  Previous Field
-                </label>
-                <input
-                  type="text"
-                  id="previousField"
-                  placeholder="Product Management"
-                  value={formData.previousField}
-                  onChange={handleChange}
-                  className={
-                    'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
-                  }
-                />
-              </div>
-
-              {/* Hobbies */}
-              <div>
-                <label htmlFor="hobbies" className="block text-sm font-medium text-gray-700">
-                  Hobbies
-                </label>
-                <input
-                  type="text"
-                  id="hobbies"
-                  placeholder="Cooking, reading"
-                  value={formData.hobbies}
-                  onChange={handleChange}
-                  className={
-                    'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
-                  }
-                />
-              </div>
-
-              {/* Interest */}
-              <div>
-                <label htmlFor="interest" className="block text-sm font-medium text-gray-700">
-                  Interests
-                </label>
-                <input
-                  type="text"
-                  id="interests"
-                  placeholder="Public speaking, Tech"
-                  value={formData.interests}
-                  onChange={handleChange}
-                  className={
-                    'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
-                  }
-                />
-              </div>
-
-              {/* Favourite */}
-              <div>
-                <label htmlFor="favouriteCodingSnack" className="block text-sm font-medium text-gray-700">
-                  Favourite coding snack
-                </label>
-                <input
-                  type="text"
-                  id="favouriteCodingSnack"
-                  placeholder="java,javascript"
-                  value={formData.favouriteCodingSnack}
-                  onChange={handleChange}
-                  className={
-                    'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
-                  }
-                />
-              </div>
-
-              {/* Bio */}
-              <div>
-                <label htmlFor="bio" className="block text-sm font-medium text-gray-700">
-                  Bio
-                </label>
-                <input
-                  type="text"
-                  id="bio"
-                  placeholder="I live for positive impact"
-                  value={formData.bio}
-                  onChange={handleChange}
-                  className={
-                    'mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3'
-                  }
-                />
-              </div>
-            </div>
-
-            <div className={'w-full flex flex-col m-20'}>
-              <div className={'w-full flex justify-center items-center'}>
-                <p className={'font-medium text-[26px] mb-8'}>Favourite Quote</p>
-              </div>
-              <div className={'flex w-full items-center'}>
-                <p className={'font-extralight text-[22px] italic'}>
-                  Impacting lives is the greatest legacy, and the pursuit of knowledge is the hidden
-                  gem that unlocks endless possibilities.
-                </p>
-              </div>
-            </div>
-
-            <div className={'w-full p-6 mb-20'}>
-              <Accordion open={open === 1} icon={<CiEdit id={1} open={open} size={30} />}>
-                <AccordionHeader
-                  onClick={() => handleOpen(1)}
-                  className={'text-[18px] font-medium'}
-                >
-                  Who is most likely to?
-                </AccordionHeader>
-                <AccordionBody>
-                  <textarea
+          <div className="w-full">
+            <div className="container mx-auto p-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {[
+                  { id: 'currentRole', label: 'Current Role *', placeholder: 'Product Management' },
+                  {
+                    id: 'previousField',
+                    label: 'Previous Field *',
+                    placeholder: 'Product Management',
+                  },
+                  { id: 'hobbies', label: 'Hobbies *', placeholder: 'Cooking, reading' },
+                  { id: 'interests', label: 'Interests *', placeholder: 'Public speaking, Tech' },
+                  {
+                    id: 'favoriteCodingSnack',
+                    label: 'Favorite coding snack *',
+                    placeholder: 'coffee, water',
+                  },
+                  { id: 'bio', label: 'Bio *', placeholder: 'I live for positive impact' },
+                  { id: 'instagram', label: 'Instagram', placeholder: 'profileName' },
+                  {
+                    id: 'linkedIn',
+                    label: 'LinkedIn',
+                    placeholder: 'www.linkedin.com/in/firstname-lastname',
+                  },
+                ].map(({ id, label, placeholder }) => (
+                  <div key={id}>
+                    <label htmlFor={id} className="block text-sm font-medium text-gray-700">
+                      {label}
+                    </label>
+                    <input
+                      type="text"
+                      id={id}
+                      placeholder={placeholder}
+                      value={formData[id] || ''}
+                      onChange={handleChange}
+                      className="mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3"
+                    />
+                  </div>
+                ))}
+                <div>
+                  <label
+                    htmlFor="mostLikelyToQuestion"
+                    className="block text-sm font-medium text-gray-700 mb-3"
+                  >
+                    Most Likely To
+                  </label>
+                  <Select
                     id="mostLikelyToQuestion"
-                    placeholder="Enter your message"
-                    rows="4"
-                    className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
-                    value={formData.mostLikelyToQuestion}
-                    onChange={handleChange}
-                  />
-                </AccordionBody>
-              </Accordion>
-              <Accordion open={open === 2} icon={<CiEdit id={2} open={open} size={30} />}>
-                <AccordionHeader
-                  onClick={() => handleOpen(2)}
-                  className={'text-[18px] font-medium'}
-                >
-                  Most memorable bootcamp moment?
-                </AccordionHeader>
-                <AccordionBody>
-                  <textarea
-                    id="mostMemorableBootcampMoment"
-                    placeholder="Enter your message"
-                    rows="4"
-                    className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
-                    value={formData.mostMemorableBootcampMoment}
-                    onChange={handleChange}
-                  />
-                </AccordionBody>
-              </Accordion>
-              <Accordion open={open === 3} icon={<CiEdit id={3} open={open} size={30} />}>
-                <AccordionHeader
-                  onClick={() => handleOpen(3)}
-                  className={'text-[18px] font-medium'}
-                >
-                  Last words?
-                </AccordionHeader>
-                <AccordionBody>
-                  <textarea
-                    id="lastWords"
-                    placeholder="Enter your message"
-                    rows="4"
-                    value={formData.lastWords}
-                    onChange={handleChange}
-                    className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
-                  />
-                </AccordionBody>
-              </Accordion>
-              <Accordion open={open === 4} icon={<CiEdit id={4} open={open} size={30} />}>
-                <AccordionHeader
-                  onClick={() => handleOpen(4)}
-                  className={'text-[18px] font-medium'}
-                >
-                  Advice for future cohort?
-                </AccordionHeader>
-                <AccordionBody>
-                  <textarea
-                    id="adviceForFutureCohort"
-                    placeholder="Enter your message"
-                    rows="4"
-                    value={formData.adviceForFutureCohort}
-                    onChange={handleChange}
-                    className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
-                  />
-                </AccordionBody>
-              </Accordion>
-              <Accordion open={open === 5} icon={<CiEdit id={5} open={open} size={30} />}>
-                <AccordionHeader
-                  onClick={() => handleOpen(5)}
-                  className={'text-[18px] font-medium'}
-                >
-                  Biggest challenge and how you overcame it?
-                </AccordionHeader>
-                <AccordionBody>
-                  <textarea
-                    id="biggestChallenge"
-                    placeholder="Enter your message"
-                    rows="4"
-                    value={formData.biggestChallenge}
-                    onChange={handleChange}
-                    className="mt-1 block w-full text-gray-900 text-[18px]  focus:ring-transparent focus:border-transparent px-4 "
-                  />
-                </AccordionBody>
-              </Accordion>
+                    size="lg"
+                    label="Select Question"
+                    animate={{ mount: { y: 0 }, unmount: { y: 50 } }}
+                    value={formData?.mostLikelyToQuestion || ''}
+                    onChange={(val) =>
+                      handleChange({ target: { id: 'mostLikelyToQuestion', value: val } })
+                    }
+                    className="w-full bg-white text-gray-900 text-[18px] px-4 truncate"
+                    containerProps={{ className: 'min-w-0 [&>button>span]:!static' }}
+                  >
+                    <Option value={null}> </Option>
+                    <Option value="become a reality TV star">become a reality TV star</Option>
+                    <Option value="survive a zombie apocalypse using just their wits">
+                      survive a zombie apocalypse using just their wits
+                    </Option>
+                    <Option value="show up to a reunion with a crazy success story">
+                      show up to a reunion with a crazy success story
+                    </Option>
+                    <Option value="arrive late to their own wedding">
+                      arrive late to their own wedding
+                    </Option>
+                    <Option value='bring up "the good old days" in every conversation'>
+                      bring up "the good old days" in every conversation
+                    </Option>
+                  </Select>
+                </div>
+                <div>
+                  <label
+                    htmlFor="mostLikelyToAnswer"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Answer
+                  </label>
+                  <div className="relative" ref={menuRef}>
+                    <input
+                      type="text"
+                      id="mostLikelyToAnswer"
+                      placeholder="Type to search..."
+                      value={
+                        formData?.mostLikelyToQuestion === null
+                          ? ''
+                          : formData?.mostLikelyToAnswer || ''
+                      }
+                      onChange={handleChange}
+                      onClick={() => setOpenMenu(true)}
+                      className="mt-1 block w-full rounded-md border-[1px] focus:ring-[transparent] border-[#B7B7B7] px-4 py-3"
+                      disabled={formData?.mostLikelyToQuestion === null}
+                    />
+                    {openMenu && (
+                      <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-auto">
+                        {filteredOptions.map((option, index) => (
+                          <li
+                            key={index}
+                            onClick={() => {
+                              setFormData({ ...formData, mostLikelyToAnswer: option });
+                              setOpenMenu(false);
+                            }}
+                            className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                          >
+                            {option}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="w-full p-6 mb-20 mt-20">
+                {[
+                  { id: 'favoriteQuote', label: 'Favorite Quote' },
+                  { id: 'mostMemorableBootcampMoment', label: 'Most memorable bootcamp moment?' },
+                  { id: 'lastWords', label: 'Last words?' },
+                  { id: 'adviceForFutureCohort', label: 'Advice for future cohort?' },
+                  { id: 'biggestChallenge', label: 'Biggest challenge and how you overcame it?' },
+                ].map(({ id, label }, index) => (
+                  <Accordion
+                    key={id}
+                    open={open === index}
+                    icon={<CiEdit id={index} open={open} size={30} />}
+                  >
+                    <AccordionHeader
+                      onClick={() => handleOpen(index)}
+                      className="text-[18px] font-medium"
+                    >
+                      {label}
+                    </AccordionHeader>
+                    <AccordionBody>
+                      <textarea
+                        id={id}
+                        placeholder="Enter your message"
+                        rows="4"
+                        value={formData[id] || ''}
+                        onChange={handleChange}
+                        className="mt-1 block w-full text-gray-900 text-[18px] focus:ring-transparent focus:border-transparent px-4"
+                      />
+                    </AccordionBody>
+                  </Accordion>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

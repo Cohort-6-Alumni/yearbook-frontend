@@ -1,3 +1,4 @@
+import { useEffect, useContext } from 'react';
 import { Route, Routes, Navigate } from 'react-router';
 import Login from '../pages/user/Login';
 import CompleteSignup from '../pages/app/CompleteSignUp.jsx';
@@ -9,8 +10,12 @@ import Profile from '../pages/user/Profile.jsx';
 import UserAccount from '../pages/user/UserAccount.jsx';
 import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
+import CustomFooter from '../components/CustomFooter.jsx';
+import useTokenExpiry from '../hooks/useTokenExpiry.jsx';
+import ErrorPage from '../pages/error/ErrorPage.jsx';
 
 const AuthenticatedRoute = () => {
+  useTokenExpiry();
   return (
     <Routes>
       <Route exact path="/login" element={<Login />} />
@@ -19,54 +24,77 @@ const AuthenticatedRoute = () => {
         exact
         path="/yearbook"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <HomePage />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <HomePage />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
         path="/user/profile/:profileId/edit"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <Profile />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <Profile />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
-        path="/public/profile/:profileId"
+        path="/profile/:profileId"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <ReadOnlyProfile />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <ReadOnlyProfile />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
         path="/user/:userId/details"
         element={
-          <NavLayout showNav>
-            <CustomBreadcrumbs />
-            <UserAccount />
-          </NavLayout>
+          <>
+            <NavLayout showNav>
+              <CustomBreadcrumbs />
+              <UserAccount />
+            </NavLayout>
+            <CustomFooter />
+          </>
         }
       />
       <Route
         exact
-        path="/user/forgotPassword"
+        path="/forgot_password"
         element={
-          <NavLayout showNav>
+          <>
             <ForgotPassword />
-          </NavLayout>
+            <CustomFooter />
+          </>
+        }
+      />
+      <Route
+        exact
+        path="/app_error"
+        element={
+          <>
+            <ErrorPage code={400} message={'Page Not Found'} />
+            <CustomFooter />
+          </>
         }
       />
 
       <Route exact path="/" element={<LandingPage />} />
-      <Route exact path="*" element={<Navigate to="/login" />} />
+      <Route exact path="*" element={<Navigate to="/app_error" />} />
     </Routes>
   );
 };

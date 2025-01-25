@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
@@ -18,6 +18,10 @@ const LandingPage = () => {
     'Cohort-6-Alumni',
     'yearbook'
   );
+
+  useEffect(() => {
+    document.title = 'Obsidi Academy Alumni Yearbook';
+  }, []);
 
   const itemsPerPage = 4;
 

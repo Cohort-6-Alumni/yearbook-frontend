@@ -1,7 +1,11 @@
-import React from 'react';
+import { useContext } from 'react';
 import { Link } from 'react-router';
+import { AppContext } from '../context/contextApi';
 
 const LandingPageNavbar = () => {
+  const { getSession, logout } = useContext(AppContext);
+
+
   return (
     <>
       <header className="max-w-xxl mx-auto bg-purple-600 bg-opacity-80 rounded-lg shadow-md">
@@ -20,9 +24,9 @@ const LandingPageNavbar = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M4 8h16M4 16h16"
                 ></path>
               </svg>
@@ -36,22 +40,22 @@ const LandingPageNavbar = () => {
                 stroke="currentColor"
               >
                 <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 ></path>
               </svg>
             </button>
 
             <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10">
-              <Link
+              {/* <Link
                 to="/"
                 className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
                 aria-current="page"
               >
                 Home
-              </Link>
+              </Link> */}
               <Link
                 to="/about"
                 className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
@@ -66,13 +70,24 @@ const LandingPageNavbar = () => {
               >
                 Yearbook
               </Link>
-              <Link
-                to="/login"
-                className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
-                aria-current="page"
-              >
-                Login
-              </Link>
+              {!getSession() ? (
+                <Link
+                  to="/login"
+                  className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
+                  aria-current="page"
+                >
+                  Login
+                </Link>
+              ) : (
+                <Link
+                onClick={logout}
+                  to="#"
+                  className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
+                  aria-current="page"
+                >
+                  Logout
+                </Link>
+              )}
             </div>
           </div>
         </div>

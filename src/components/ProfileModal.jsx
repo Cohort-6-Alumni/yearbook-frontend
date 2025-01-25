@@ -26,11 +26,9 @@ const ProfileModal = ({ openProp, onClose }) => {
   };
 
   const createProfile = async () => {
-    console.log('Create Profile');
     const token = getSession();
     try {
       const response = await updateProfile(token, ProfileData);
-      console.log('User:', response);
       setUserData(response.data);
       const profileId = response.data.profile.profileId;
       handleClose();
