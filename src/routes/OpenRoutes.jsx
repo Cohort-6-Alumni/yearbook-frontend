@@ -9,6 +9,7 @@ import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
 import CustomFooter from '../components/CustomFooter.jsx';
 import ResetPassword from '../pages/app/ResetPassword.jsx';
 import CompleteSignUp from '../pages/app/CompleteSignUp.jsx';
+import ErrorPage from '../pages/error/ErrorPage.jsx';
 
 const OpenRoutes = () => {
   return (
@@ -70,9 +71,19 @@ const OpenRoutes = () => {
           </>
         }
       />
+      <Route
+        exact
+        path="/app_error"
+        element={
+          <>
+            <ErrorPage code={400} message={'Page Not Found'} />
+            <CustomFooter />
+          </>
+        }
+      />
 
       <Route exact path="/" element={<LandingPage />} />
-      <Route exact path="*" element={<Navigate to="/" />} />
+      <Route exact path="*" element={<Navigate to="/app_error" />} />
     </Routes>
   );
 };
