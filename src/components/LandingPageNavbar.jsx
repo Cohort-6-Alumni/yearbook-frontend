@@ -1,6 +1,11 @@
+import { useContext } from 'react';
 import { Link } from 'react-router';
+import { AppContext } from '../context/contextApi';
 
 const LandingPageNavbar = () => {
+  const { getSession, logout } = useContext(AppContext);
+
+
   return (
     <>
       <header className="max-w-xxl mx-auto bg-purple-600 bg-opacity-80 rounded-lg shadow-md">
@@ -65,13 +70,24 @@ const LandingPageNavbar = () => {
               >
                 Yearbook
               </Link>
-              <Link
-                to="/login"
-                className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
-                aria-current="page"
-              >
-                Login
-              </Link>
+              {!getSession() ? (
+                <Link
+                  to="/login"
+                  className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
+                  aria-current="page"
+                >
+                  Login
+                </Link>
+              ) : (
+                <Link
+                onClick={logout}
+                  to="#"
+                  className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
+                  aria-current="page"
+                >
+                  Logout
+                </Link>
+              )}
             </div>
           </div>
         </div>

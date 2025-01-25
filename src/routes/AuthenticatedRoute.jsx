@@ -12,6 +12,7 @@ import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
 import CustomFooter from '../components/CustomFooter.jsx';
 import useTokenExpiry from '../hooks/useTokenExpiry.jsx';
+import ErrorPage from '../pages/error/ErrorPage.jsx';
 
 const AuthenticatedRoute = () => {
   useTokenExpiry();
@@ -81,9 +82,19 @@ const AuthenticatedRoute = () => {
           </>
         }
       />
+      <Route
+        exact
+        path="/app_error"
+        element={
+          <>
+            <ErrorPage code={400} message={'Page Not Found'} />
+            <CustomFooter />
+          </>
+        }
+      />
 
       <Route exact path="/" element={<LandingPage />} />
-      <Route exact path="*" element={<Navigate to="/login" />} />
+      <Route exact path="*" element={<Navigate to="/app_error" />} />
     </Routes>
   );
 };
