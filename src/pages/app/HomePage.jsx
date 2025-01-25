@@ -28,6 +28,10 @@ const HomePage = ({ searchQuery }) => {
 
     fetchProfiles();
   }, []);
+
+  useEffect(() => {
+    document.title = 'Obsidi Academy Alumni Yearbook';
+  }, []);
   const filteredProfiles = profiles.filter((profile) =>
     `${profile.firstName} ${profile.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
   );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, Input, Button, Typography } from '@material-tailwind/react';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 import { useFormik } from 'formik';
@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import TopRightElipse from '../../assets/top-right-elipse.png';
 import BottomLeftElipse from '../../assets/bottom-left-elipse.png';
 import { Link, useSearchParams, useNavigate, Navigate } from 'react-router';
-import { completeSignUp } from '../../api';
+import { resetPassword } from '../../api';
 import toast from 'react-hot-toast';
 
 const validationSchema = Yup.object({
@@ -18,7 +18,7 @@ const validationSchema = Yup.object({
     .required('Confirm password is required'),
 });
 
-const CompleteSignUp = () => {
+const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -30,9 +30,10 @@ const CompleteSignUp = () => {
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await completeSignUp(token, values.password);
+        const response = await resetPassword(token, values.password);
         if (response.status === 200) {
-          toast.success('Account created successfully!');
+          toast.success('Password reset successfully!');
+
           navigate('/login');
         }
       } catch (error) {
@@ -42,7 +43,7 @@ const CompleteSignUp = () => {
   });
   const token = searchParams.get('token');
   useEffect(() => {
-    document.title = 'Complete Sign Up | Yearbook';
+    document.title = 'Reset Password | Yearbook';
   }, []);
 
   return !token ? (
@@ -52,7 +53,7 @@ const CompleteSignUp = () => {
       <img src={TopRightElipse} alt="Top Right Elipse" className="absolute top-0 right-0 w-1/2" />
       <Card className="w-full max-w-md p-6">
         <Typography variant="h4" className="text-center mb-6">
-          Complete Sign up
+          Reset Account Password
         </Typography>
 
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6">
@@ -60,7 +61,7 @@ const CompleteSignUp = () => {
             <Input
               type={showPassword ? 'text' : 'password'}
               name="password"
-              label="Password"
+              label="New Password"
               value={formik.values.password}
               onChange={formik.handleChange}
               error={formik.touched.password && formik.errors.password}
@@ -107,15 +108,9 @@ const CompleteSignUp = () => {
           </Button>
 
           <Typography color="gray" className="text-center text-sm">
-            Already have an account?{' '}
-            <Link to="/login" className="text-purple-500 font-medium hover:text-purple-600">
-              Login
+            <Link to="/login" className="text-purple-500 font-medium hover:underline">
+              Back to Login
             </Link>
-          </Typography>
-
-          <Typography variant="small" color="gray" className="text-center text-xs">
-            By proceeding, you agree to the Privacy Policy and the Terms and Conditions of this
-            product and every other third party services.
           </Typography>
         </form>
       </Card>
@@ -128,4 +123,4 @@ const CompleteSignUp = () => {
   );
 };
 
-export default CompleteSignUp;
+export default ResetPassword;

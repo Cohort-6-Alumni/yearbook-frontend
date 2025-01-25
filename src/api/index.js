@@ -114,3 +114,29 @@ export const getAllMembers = async (token) => {
     return error.response;
   }
 };
+
+export const forgotPassword = async (emailId) => {
+  try {
+    const response = await axios.get(`${API_URL}/user/reset/${ emailId }`);
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const resetPassword = async (token, password) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/user/reset`,
+      { password },
+      {
+        headers: {
+          Authorization: frameToken(token),
+        },
+      }
+    );
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+}

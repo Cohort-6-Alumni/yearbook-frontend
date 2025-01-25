@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { Card, Input, Button, Typography } from '@material-tailwind/react';
 import { IoEyeOutline, IoEyeOffOutline } from 'react-icons/io5';
 import { useFormik } from 'formik';
@@ -39,6 +39,10 @@ const LoginPage = () => {
       setLoading(false);
     },
   });
+
+    useEffect(() => {
+      document.title = 'Login | Yearbook';
+    }, []);
 
   return (
     <div className="min-h-screen bg-white flex">
@@ -92,6 +96,14 @@ const LoginPage = () => {
               {formik.touched.password && formik.errors.password ? (
                 <div className="text-red-500 text-sm">{formik.errors.password}</div>
               ) : null}
+              <Typography
+                color="gray"
+                className="text-sm text-purple-500 font-medium hover:text-purple-600 pt-2"
+                as={'a'}
+                href="/forgot_password"
+              >
+                Forgot Password?
+              </Typography>
             </div>
             {loginError && <div className="text-red-500 text-sm text-center">{loginError}</div>}
 
@@ -107,7 +119,12 @@ const LoginPage = () => {
             <div className="text-center">
               <Typography color="gray" className="text-sm">
                 Don&apos;t have an account?{' '}
-                <a href="#" className="text-purple-500 font-medium hover:text-purple-600">
+                <a
+                  href="mailto:support@obsidialumniyearbook.com"
+                  rel="noreferrer"
+                  target="_blank"
+                  className="text-purple-500 font-medium hover:text-purple-600"
+                >
                   Contact Admin for access
                 </a>
               </Typography>

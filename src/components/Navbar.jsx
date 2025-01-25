@@ -1,6 +1,6 @@
 import { FiSearch } from 'react-icons/fi';
 import logo from '../assets/logo.png';
-import { useLocation, Link } from 'react-router';
+import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
 // import { Navbar } from '@material-tailwind/react';
 
@@ -10,9 +10,7 @@ const Navbar = ({ component, onSearch }) => {
   return (
     <nav className="sticky top-0 z-10 bg-white pt-1 border-b border-gray-200">
       <div className="container mx-auto px-4 py-1 flex justify-between items-center">
-        <Link to={'/'}>
           <img className="w-[60px] h-[60px] border-gray-300" src={logo} alt="Logo" />
-        </Link>
         {location.pathname === '/yearbook' && (
           <div className="relative max-w-md mx-auto">
             <input

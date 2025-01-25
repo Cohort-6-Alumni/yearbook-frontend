@@ -11,7 +11,6 @@ import ImageCropper from '../../components/ImageCropper.jsx';
 import { convertBase64 } from '../../utils/Helper.js';
 import AvatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
 
-
 const UserAccount = () => {
   const [showEditPassword, setShowEditPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -44,6 +43,10 @@ const UserAccount = () => {
       formikRef.current.setFieldValue('picture', imageSrc);
     }
   }, [imageSrc]);
+
+  useEffect(() => {
+    document.title = 'User Details | Yearbook';
+  }, []);
 
   const closeModal = () => {
     setUploadImageData(undefined);
