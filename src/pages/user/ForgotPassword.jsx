@@ -1,52 +1,42 @@
 import { useEffect, useRef, useState } from 'react';
 import * as Yup from 'yup';
 import { Link } from 'react-router';
-import { Formik, Form } from 'formik';
-import { Button, Badge, Input } from '@material-tailwind/react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Button } from '@material-tailwind/react';
+import { forgotPassword } from '../../api';
 
 import LogoImage from '../../assets/logo.png';
 
-//declare variable
-
 const ForgotPassword = () => {
-  const formikRef = useRef();
   const [isFetching, setIsFetching] = useState(false);
+  const formikRef = useRef();
 
   useEffect(() => {
     document.title = 'Forgot Password | Yearbook';
   }, []);
 
-  const onFormSubmit = async (values) => {
+  const onFormSubmit = async (values, { setFieldValue }) => {
     if (!isFetching) {
       setIsFetching(true); // Prevent multiple submissions
-      // Call the API with the provided email
-      // const apiResponse = await forgotPasswordApi(values.email);
-
-      // if (apiResponse.status === 1) {
-      //   formikRef.current.setFieldValue(
-      //     'formMessage',
-      //     'Please check your email to reset the password.'
-      //   );
-      // } else {
-      //   formikRef.current.setFieldValue('formMessage', apiResponse.payLoad);
-      // }
-      setIsFetching(false);
+      try {
+        const response = await forgotPassword(values.email);
+        if (response.status === 200) {
+          setFieldValue('formMessage', 'Please check your email to reset the password.');
+        } else {
+          setFieldValue('formMessage', response.payLoad || 'An error occurred. Please try again.');
+        }
+      } catch (error) {
+        setFieldValue('formMessage', 'An error occurred. Please try again.');
+      } finally {
+        setIsFetching(false);
+      }
     }
   };
-  //his helps with validation of the fields
-  const ForgotPasswordSchema = Yup.object().shape({
-    email: Yup.string().required('Required'),
-  });
 
-  //   const ResetPasswordSchema = Yup.object().shape({
-  //     verifyToken: Yup.string().required("Required"),
-  //     password: Yup.string()
-  //       .matches(
-  //         /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})/,
-  //         "Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and One Special Case Character"
-  //       )
-  //       .required("Required"),
-  // });
+  // Validation schema for the form
+  const ForgotPasswordSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email').required('Required'),
+  });
 
   return (
     <div className="bg-white">
@@ -58,7 +48,7 @@ const ForgotPassword = () => {
                 innerRef={formikRef}
                 initialValues={{
                   email: '',
-                  formMessage: undefined,
+                  formMessage: '',
                 }}
                 validationSchema={ForgotPasswordSchema}
                 onSubmit={onFormSubmit}
@@ -67,10 +57,10 @@ const ForgotPassword = () => {
                   <Form>
                     {values.formMessage && (
                       <div className="w-full md:w-1/2 mx-auto">
-                        <Badge text={values.formMessage} />
+                        <div className="text-green-500 text-sm mt-4">{values.formMessage}</div>
                       </div>
                     )}
-                    <img src={LogoImage} width={120} className="mx-auto mb-2" />
+                    <img src={LogoImage} width={120} className="mx-auto mb-2" alt="Logo" />
                     <h2 className="text-4xl font-bold text-center text-gray-700">
                       Forgot Password?
                     </h2>
@@ -80,22 +70,37 @@ const ForgotPassword = () => {
                     </p>
 
                     <div className="my-5 w-60 mx-auto">
-                      <Input name="email" id="email" placeholder="" />
+                      <Field
+                        name="email"
+                        id="email"
+                        placeholder="Enter your email"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-2 focus:shadow-outline"
+                      />
+                      <ErrorMessage
+                        name="email"
+                        component="div"
+                        className="text-red-500 text-xs mt-1"
+                      />
                     </div>
                     <div className="my-5 w-60 mx-auto">
-                      <Button type="submit" fullWidth className="bg-purple-500 hover:bg-purple-600">
-                        Request Link
-                      </Button>{' '}
+                      <Button
+                        type="submit"
+                        fullWidth
+                        className="bg-purple-500 hover:bg-purple-600"
+                        disabled={isFetching}
+                      >
+                        {isFetching ? 'Submitting...' : 'Request Link'}
+                      </Button>
                     </div>
-                    <Link
-                      to="/user/login"
-                      className="text-sm text-gray-400 focus:text-purple-500 hover:text-purple-500 hover:underline"
-                    >
-                      Back to Login
-                    </Link>
                   </Form>
                 )}
               </Formik>
+              <Link
+                to="/login"
+                className="text-sm text-gray-400 focus:text-purple-500 hover:text-purple-500 hover:underline"
+              >
+                Back to Login
+              </Link>
             </div>
           </div>
         </div>

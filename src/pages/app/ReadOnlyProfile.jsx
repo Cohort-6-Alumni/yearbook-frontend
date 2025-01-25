@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams } from 'react-router';
 import useFetchProfile from '../../hooks/useFetchProfile.jsx';
 import Loader from '../../components/Loader.jsx';
@@ -8,6 +9,10 @@ import linkedinLogo from '../../assets/linkedin.png';
 const ReadOnlyProfile = () => {
   const params = useParams();
   const { profile, loading, error } = useFetchProfile(params.profileId);
+
+  useEffect(() => {
+      document.title = 'Profile | Yearbook';
+    }, []);
 
   if (loading) {
     return <Loader />;

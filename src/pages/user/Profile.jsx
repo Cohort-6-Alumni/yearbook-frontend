@@ -60,6 +60,10 @@ const Profile = () => {
     }
   }, [formData?.picture]);
 
+  useEffect(() => {
+    document.title = 'User Profile | Yearbook';
+  }, []);
+
   const fetchMembers = async () => {
     setIsFetching(true);
     try {

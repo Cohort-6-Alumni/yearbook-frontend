@@ -73,12 +73,10 @@ const AuthenticatedRoute = () => {
       />
       <Route
         exact
-        path="/user/forgotPassword"
+        path="/forgot_password"
         element={
           <>
-            <NavLayout showNav>
-              <ForgotPassword />
-            </NavLayout>
+            <ForgotPassword />
             <CustomFooter />
           </>
         }
