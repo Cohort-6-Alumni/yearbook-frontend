@@ -108,6 +108,13 @@ const Profile = () => {
       'bio',
       'hobbies',
       'interests',
+      'favoriteQuote',
+      'mostMemorableBootcampMoment',
+      'biggestChallenge',
+      'howYouOvercameIt',
+      'mostLikelyToQuestion',
+      'mostLikelyToAnswer',
+
     ];
 
     const isFormValid = requiredFields.every((field) => formData[field]);
@@ -228,7 +235,11 @@ const Profile = () => {
                     placeholder: 'coffee, water',
                   },
                   { id: 'bio', label: 'Bio *', placeholder: 'I live for positive impact' },
-                  { id: 'instagram', label: 'Instagram', placeholder: 'profileName' },
+                  {
+                    id: 'instagram',
+                    label: 'Instagram',
+                    placeholder: 'www.instagram.com/username/',
+                  },
                   {
                     id: 'linkedIn',
                     label: 'LinkedIn',
@@ -331,7 +342,8 @@ const Profile = () => {
                   { id: 'mostMemorableBootcampMoment', label: 'Most memorable bootcamp moment?' },
                   { id: 'lastWords', label: 'Last words?' },
                   { id: 'adviceForFutureCohort', label: 'Advice for future cohort?' },
-                  { id: 'biggestChallenge', label: 'Biggest challenge and how you overcame it?' },
+                  { id: 'biggestChallenge', label: 'Biggest challenge?' },
+                  { id: 'howYouOvercameIt', label: 'How did you overcame it?' },
                 ].map(({ id, label }, index) => (
                   <Accordion
                     key={id}
