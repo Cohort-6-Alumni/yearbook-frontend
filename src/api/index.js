@@ -96,7 +96,19 @@ export const updateProfile = async (token, data) => {
         Authorization: frameToken(token),
       },
     });
-    return response;
+    return {
+      status: response.status,
+      data: {
+        username: response.data?.username,
+        role: response.data?.role,
+        userId: response.data?.userId,
+        profileId: response.data?.profile?.profileId,
+        firstName: response.data?.firstName,
+        lastName: response.data?.lastName,
+        emailId: response.data?.emailId,
+        picture: response.data?.picture,
+      },
+    };
   } catch (error) {
     return error.response;
   }

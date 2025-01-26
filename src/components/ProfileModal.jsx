@@ -30,7 +30,7 @@ const ProfileModal = ({ openProp, onClose }) => {
     try {
       const response = await updateProfile(token, ProfileData);
       setUserData(response.data);
-      const profileId = response.data.profile.profileId;
+      const profileId = response.data.profileId;
       handleClose();
       navigate(`/user/profile/${profileId}/edit`);
     } catch (error) {

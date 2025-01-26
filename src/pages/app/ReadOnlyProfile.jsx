@@ -5,14 +5,15 @@ import Loader from '../../components/Loader.jsx';
 import AvatarPlaceholder from '../../assets/Profile_avatar_placeholder_large.png';
 import instagramLogo from '../../assets/instagram.png';
 import linkedinLogo from '../../assets/linkedin.png';
+import { Card, CardBody, CardHeader, Typography } from '@material-tailwind/react';
 
 const ReadOnlyProfile = () => {
   const params = useParams();
   const { profile, loading, error } = useFetchProfile(params.profileId);
 
   useEffect(() => {
-      document.title = 'Profile | Yearbook';
-    }, []);
+    document.title = 'Profile | Yearbook';
+  }, []);
 
   if (loading) {
     return <Loader />;
@@ -91,47 +92,88 @@ const ReadOnlyProfile = () => {
       </div>
 
       <div className={'w-full flex flex-col'}>
-        <div className={'mb-4'}>
-          <p className={'mb-2 text-lg'}>Most Likely To {profile?.mostLikelyToQuestion || ''}?</p>
-          <div className={'bg-[#F6F6F6] rounded-md p-4'}>
-            <p className={'text-sm'}>{profile?.mostLikelyToAnswer || ''}</p>
-          </div>
-        </div>
+        <Card className="mb-4">
+          <CardHeader floated={false} shadow={false} className="m-3">
+            <Typography variant="h6" color="black">
+              Most Likely To {profile?.mostLikelyToQuestion || ''}?
+            </Typography>
+          </CardHeader>
+          <hr className="border-1" />
+          <CardBody className={'bg-[#F6F6F6] p-3'}>
+            <Typography variant="body2" color="gray">
+              {profile?.mostLikelyToAnswer || ''}
+            </Typography>
+          </CardBody>
+        </Card>
+        <Card className={'mb-4'}>
+          <CardHeader floated={false} shadow={false} className="m-3">
+            <Typography variant="h6" color="black">
+              Most memorable training program moment?
+            </Typography>
+          </CardHeader>
+          <hr className="border-1" />
+          <CardBody className={'bg-[#F6F6F6] p-3'}>
+            <Typography variant="body2" color="gray">
+              {profile?.mostMemorableTrainingProgramMoment || ''}
+            </Typography>
+          </CardBody>
+        </Card>
 
-        <div className={'mb-4'}>
-          <p className={'mb-2 text-lg'}>Most memorable bootcamp moment?</p>
-          <div className={'bg-[#F6F6F6] rounded-md p-4'}>
-            <p className={'text-sm'}>{profile?.mostMemorableBootcampMoment || ''}</p>
-          </div>
-        </div>
+        <Card className={'mb-4'}>
+          <CardHeader floated={false} shadow={false} className="m-3">
+            <Typography variant="h6" color="black">
+              Last words
+            </Typography>
+          </CardHeader>
+          <hr className="border-1" />
+          <CardBody className={'bg-[#F6F6F6] p-3'}>
+            <Typography variant="body2" color="gray">
+              {profile?.lastWords || ''}
+            </Typography>
+          </CardBody>
+        </Card>
 
-        <div className={'mb-4'}>
-          <p className={'mb-2 text-lg'}>Last words</p>
-          <div className={'bg-[#F6F6F6] rounded-md p-4'}>
-            <p className={'text-sm'}>{profile?.lastWords || ''}</p>
-          </div>
-        </div>
+        <Card className={'mb-4'}>
+          <CardHeader floated={false} shadow={false} className="m-3">
+            <Typography variant="h6" color="black">
+              Advice for future cohort
+            </Typography>
+          </CardHeader>
+          <hr className="border-1" />
+          <CardBody className={'bg-[#F6F6F6] p-3'}>
+            <Typography variant="body2" color="gray">
+              {profile?.adviceForFutureCohort || ''}
+            </Typography>
+          </CardBody>
+        </Card>
 
-        <div className={'mb-4'}>
-          <p className={'mb-2 text-lg'}>Advice for future cohort</p>
-          <div className={'bg-[#F6F6F6] rounded-md p-4'}>
-            <p className={'text-sm'}>{profile?.adviceForFutureCohort || ''}</p>
-          </div>
-        </div>
+        <Card className={'mb-4'}>
+          <CardHeader floated={false} shadow={false} className="m-3">
+            <Typography variant="h6" color="black">
+              Biggest Challenge?
+            </Typography>
+          </CardHeader>
+          <hr className="border-1" />
+          <CardBody className={'bg-[#F6F6F6] p-3'}>
+            <Typography variant="body2" color="gray">
+              {profile?.biggestChallenge || ''}
+            </Typography>
+          </CardBody>
+        </Card>
 
-        <div className={'mb-4'}>
-          <p className={'mb-2 text-lg'}>Biggest Challenge?</p>
-          <div className={'bg-[#F6F6F6] rounded-md p-4'}>
-            <p className={'text-sm'}>{profile?.biggestChallenge || ''}</p>
-          </div>
-        </div>
-
-        <div className={'mb-4'}>
-          <p className={'mb-2 text-lg'}>How you overcame it</p>
-          <div className={'bg-[#F6F6F6] rounded-md p-4'}>
-            <p className={'text-sm'}>{profile?.howYouOvercameIt || ''}</p>
-          </div>
-        </div>
+        <Card className={'mb-4'}>
+          <CardHeader floated={false} shadow={false} className="m-3">
+            <Typography variant="h6" color="black">
+              How you overcame it?
+            </Typography>
+          </CardHeader>
+          <hr className="border-1" />
+          <CardBody className={'bg-[#F6F6F6] p-3'}>
+            <Typography variant="body2" color="gray">
+              {profile?.howYouOvercameIt || ''}
+            </Typography>
+          </CardBody>
+        </Card>
       </div>
     </div>
   );
