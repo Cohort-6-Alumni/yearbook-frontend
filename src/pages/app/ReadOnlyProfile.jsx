@@ -108,13 +108,13 @@ const ReadOnlyProfile = () => {
         <Card className={'mb-4'}>
           <CardHeader floated={false} shadow={false} className="m-3">
             <Typography variant="h6" color="black">
-              Most memorable training program moment?
+              Most memorable Bootcamp moment?
             </Typography>
           </CardHeader>
           <hr className="border-1" />
           <CardBody className={'bg-[#F6F6F6] p-3'}>
             <Typography variant="body2" color="gray">
-              {profile?.mostMemorableTrainingProgramMoment || ''}
+              {profile?.mostMemorableBootcampMoment || ''}
             </Typography>
           </CardBody>
         </Card>
