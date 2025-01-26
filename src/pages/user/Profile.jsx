@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useRef } from 'react';
+import { useState, useContext, useEffect, useRef, Fragment } from 'react';
 import UserBanner from '../../components/UserBanner.jsx';
 import AvatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
 import {
@@ -142,13 +142,13 @@ const Profile = () => {
   );
 
   const closeModal = () => {
-    setUploadImageData(undefined);
-    if (!formData?.picture) {
-      setFormData((prevData) => ({
-        ...prevData,
-        picture: undefined,
-      }));
-    }
+    // setUploadImageData(undefined);
+    // if (!formData?.picture) {
+    //   setFormData((prevData) => ({
+    //     ...prevData,
+    //     picture: undefined,
+    //   }));
+    // }
     setIsOpen(false);
   };
 
@@ -157,12 +157,20 @@ const Profile = () => {
       const file = e.target.files[0];
       const base64 = await convertBase64(file);
       setUploadImageData(base64);
-      setFormData((prevData) => ({
-        ...prevData,
-        picture: base64,
-      }));
+      // setFormData((prevData) => ({
+      //   ...prevData,
+      //   picture: base64,
+      // }));
       setIsOpen(true);
     }
+  };
+
+  const handleSetImageSrc = (croppedImage) => {
+    setImageSrc(croppedImage);
+    setFormData((prevData) => ({
+      ...prevData,
+      picture: croppedImage,
+    }));
   };
 
   if (isFetching) {
@@ -170,16 +178,16 @@ const Profile = () => {
   }
 
   return (
-    <>
+    <Fragment>
       {modalIsOpen && uploadImageData && (
         <ImageCropper
           modalIsOpen={modalIsOpen}
           closeModal={closeModal}
           uploadImageData={uploadImageData}
-          setImageSrc={setImageSrc}
+          setImageSrc={handleSetImageSrc}
         />
       )}
-      <div className="w-full flex flex-col">
+      <div className="w-full flex flex-col overflow-auto">
         <UserBanner />
         <div className="full flex flex-col">
           <div className="flex w-full justify-between items-center">
@@ -291,7 +299,7 @@ const Profile = () => {
                       arrive late to their own wedding
                     </Option>
                     <Option value='bring up "the good old days" in every conversation'>
-                      bring up "the good old days" in every conversation
+                      bring up &ldquo;the good old days&rdquo; in every conversation
                     </Option>
                   </Select>
                 </div>
@@ -373,7 +381,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-    </>
+    </Fragment>
   );
 };
 

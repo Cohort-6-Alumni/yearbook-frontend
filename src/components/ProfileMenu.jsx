@@ -10,7 +10,6 @@ import {
 } from '@material-tailwind/react';
 import { IoPersonCircleOutline, IoCogSharp, IoPowerSharp } from 'react-icons/io5';
 import AvatarPlaceholder from '../assets/Profile_avatar_placeholder_large.png';
-import PropTypes from 'prop-types';
 import { AppContext } from '../context/contextApi';
 import { useNavigate } from 'react-router';
 import ProfileModal from './ProfileModal';
