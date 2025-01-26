@@ -15,17 +15,18 @@ import { AppContext } from '../context/contextApi';
 import { useNavigate } from 'react-router';
 import ProfileModal from './ProfileModal';
 
-const ProfileMenu = ({ user }) => {
+const ProfileMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [profilePicture, setProfilePicture] = useState(user?.picture || AvatarPlaceholder);
+  const [profilePicture, setProfilePicture] = useState(AvatarPlaceholder);
 
-  const { logout } = React.useContext(AppContext);
+  const { logout, getUserData } = React.useContext(AppContext);
   const navigate = useNavigate();
+  const user = getUserData();
 
   useEffect(() => {
     setProfilePicture(user?.picture || AvatarPlaceholder);
-  }, [user]);
+  }, [profilePicture, user?.picture]);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -37,6 +38,7 @@ const ProfileMenu = ({ user }) => {
 
   const handleEditProfile = () => {
     const userProfileId = user?.profileId;
+
     if (!userProfileId) {
       setIsModalOpen(true);
     } else {
@@ -127,8 +129,8 @@ const ProfileMenu = ({ user }) => {
   );
 };
 
-ProfileMenu.propTypes = {
-  user: PropTypes.object,
-};
+// ProfileMenu.propTypes = {
+//   user: PropTypes.object,
+// };
 
 export default ProfileMenu;

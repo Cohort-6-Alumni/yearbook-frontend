@@ -29,8 +29,9 @@ const ProfileModal = ({ openProp, onClose }) => {
     const token = getSession();
     try {
       const response = await updateProfile(token, ProfileData);
+      console.log('Response:', response);
       setUserData(response.data);
-      const profileId = response.data.profile.profileId;
+      const profileId = response.data.profileId;
       handleClose();
       navigate(`/user/profile/${profileId}/edit`);
     } catch (error) {
