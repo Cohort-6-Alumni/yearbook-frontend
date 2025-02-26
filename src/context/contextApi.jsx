@@ -1,4 +1,4 @@
-import { createContext, useState } from 'react';
+import { createContext, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { setWithExpiry, getWithExpiry, removeItem } from '../utils/storage';
 
@@ -9,6 +9,7 @@ const ContextProvider = ({ children }) => {
   // State for profiles and members list
   const [profilesCxt, setProfilesCxt] = useState([]);
   const [membersList, setMembersList] = useState([]);
+  const [userDataState, setUserDataState] = useState(getWithExpiry('app_user'));
 
   // Function to set session token with expiry
   const setSession = (token) => {
@@ -25,11 +26,12 @@ const ContextProvider = ({ children }) => {
   const setUserData = (userData) => {
     const ttl = 3600 * 1000; // 1 hour in milliseconds
     setWithExpiry('app_user', userData, ttl);
+    setUserDataState(userData);
   };
 
   // Function to get user data
   const getUserData = () => {
-    return getWithExpiry('app_user');
+    return userDataState
   };
 
   // Function to log out the user
@@ -54,20 +56,20 @@ const ContextProvider = ({ children }) => {
   // Function to get members list context
   const getMembersListCxt = () => membersList;
 
+  const contextValue = useMemo(() => ({
+    setSession,
+    getSession,
+    setUserData,
+    getUserData,
+    logout,
+    setUserProfilesCxt,
+    getUserProfilesCxt,
+    setMembersListCxt,
+    getMembersListCxt,
+  }), [profilesCxt, membersList, userDataState]);
+
   return (
-    <AppContext.Provider
-      value={{
-        setSession,
-        getSession,
-        setUserData,
-        getUserData,
-        logout,
-        setUserProfilesCxt,
-        getUserProfilesCxt,
-        setMembersListCxt,
-        getMembersListCxt,
-      }}
-    >
+    <AppContext.Provider value={contextValue}>
       {children}
     </AppContext.Provider>
   );
