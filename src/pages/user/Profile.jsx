@@ -25,7 +25,7 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
   const [openMenu, setOpenMenu] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [uploadImageData, setUploadImageData] = useState(undefined);
   const [imageSrc, setImageSrc] = useState(AvatarPlaceHolder);
   const imageSelectRef = useRef();
@@ -142,14 +142,7 @@ const Profile = () => {
   );
 
   const closeModal = () => {
-    // setUploadImageData(undefined);
-    // if (!formData?.picture) {
-    //   setFormData((prevData) => ({
-    //     ...prevData,
-    //     picture: undefined,
-    //   }));
-    // }
-    setIsOpen(false);
+    setModalIsOpen(false);
   };
 
   const onSelectFile = async (e) => {
@@ -157,11 +150,7 @@ const Profile = () => {
       const file = e.target.files[0];
       const base64 = await convertBase64(file);
       setUploadImageData(base64);
-      // setFormData((prevData) => ({
-      //   ...prevData,
-      //   picture: base64,
-      // }));
-      setIsOpen(true);
+      setModalIsOpen(true);
     }
   };
 
