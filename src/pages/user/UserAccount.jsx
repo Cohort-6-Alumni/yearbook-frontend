@@ -24,19 +24,10 @@ const UserAccount = () => {
   const imageSelectRef = useRef();
   const formikRef = useRef();
 
-  let userPicture = '';
-
-  if (getUserData().picture === null) {
-    userPicture = AvatarPlaceHolder;
-  } else {
-    userPicture = getUserData().picture;
-  }
-
   useEffect(() => {
-    if (userPicture) {
-      setImageSrc(userPicture);
-    }
-  }, []);
+    const userPicture = getUserData().picture || AvatarPlaceHolder;
+    setImageSrc(userPicture);
+  }, [getUserData]);
 
   useEffect(() => {
     if (imageSrc && imageSrc !== AvatarPlaceHolder) {
@@ -50,9 +41,6 @@ const UserAccount = () => {
 
   const closeModal = () => {
     setUploadImageData(undefined);
-    if (!userPicture) {
-      formikRef.current.setFieldValue('picture', imageSrc);
-    }
     setModal(false);
   };
 
@@ -86,25 +74,31 @@ const UserAccount = () => {
               lastName: getUserData().lastName,
               email: getUserData().emailId,
               password: '',
-              picture: userPicture,
+              picture: getUserData().picture || AvatarPlaceHolder,
             }}
+            enableReinitialize
             validationSchema={validationSchema}
-            onSubmit={async (values) => {
+            onSubmit={async (values, { setSubmitting, resetForm }) => {
               try {
                 const response = await updateAccount(getSession(), values);
                 if (response.status === 200) {
                   setUserData(response.data);
                   toast.success('Profile updated successfully');
+                  setIsUserDetailsEditable(false);
+                  setShowEditPassword(false);
+                  resetForm({ values: response.data });
                 }
               } catch (error) {
                 if (error.response) {
                   toast.error(error.response.data.message);
                 }
                 console.error(error);
+              } finally {
+                setSubmitting(false);
               }
             }}
           >
-            {({ values, initialValues }) => (
+            {({ values, initialValues, isSubmitting }) => (
               <Form>
                 <div>
                   <img
@@ -136,10 +130,11 @@ const UserAccount = () => {
                   <div className="flex w-full justify-between mb-4">
                     <p>User Details</p>
                     <button
+                      type="button"
                       disabled={isUserDetailsEditable}
                       className={`flex items-center gap-2 px-4 py-2 text-[14px] ${
                         isUserDetailsEditable && 'cursor-not-allowed'
-                      } px-4 py-3`}
+                      }`}
                       onClick={() => setIsUserDetailsEditable((prev) => !prev)}
                     >
                       <GoPencil /> Edit
@@ -175,7 +170,7 @@ const UserAccount = () => {
 
                     {/* Username */}
                     <div>
-                      <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                      <label htmlFor="username" className="block text-sm font-medium text-gray-700 ">
                         Username
                       </label>
                       <Field
@@ -183,10 +178,10 @@ const UserAccount = () => {
                         id="username"
                         name="username"
                         placeholder="Enter your username"
-                        disabled={!isUserDetailsEditable}
+                        disabled
                         className={`mt-1 block w-full rounded-md border-[1px] ${
                           isUserDetailsEditable
-                            ? 'border-[#B7B7B7] focus:ring-purple-500'
+                            ? 'border-[#B7B7B7] focus:ring-purple-500 cursor-not-allowed'
                             : 'border-gray-300 bg-gray-100'
                         } px-4 py-3`}
                       />
@@ -252,10 +247,11 @@ const UserAccount = () => {
                   <div className="flex w-full justify-between mb-2">
                     <p>Security</p>
                     <button
+                      type="button"
                       disabled={showEditPassword}
                       className={`flex items-center gap-2 px-4 py-2 text-[14px] ${
                         showEditPassword && 'cursor-not-allowed'
-                      } px-4 py-3`}
+                      }`}
                       onClick={() => setShowEditPassword((prev) => !prev)}
                     >
                       <GoPencil /> Edit
@@ -316,9 +312,9 @@ const UserAccount = () => {
                     <div>
                       <button
                         type="submit"
-                        disabled={JSON.stringify(values) === JSON.stringify(initialValues)}
+                        disabled={isSubmitting || JSON.stringify(values) === JSON.stringify(initialValues)}
                         className={`flex items-center gap-2 py-3 px-20 text-[14px] ${
-                          JSON.stringify(values) === JSON.stringify(initialValues)
+                          isSubmitting || JSON.stringify(values) === JSON.stringify(initialValues)
                             ? 'bg-gray-400 cursor-not-allowed'
                             : 'bg-[#118B50]'
                         } text-[#FFF] rounded-md justify-center`}

@@ -70,9 +70,9 @@ export const updateAccount = async (token, data) => {
   }
 };
 
-export const getProfiles = async () => {
+export const getProfiles = async (page=0, size=12) => {
   try {
-    const response = await axios.get(`${API_URL}/profiles`);
+    const response = await axios.get(`${API_URL}/profiles?page=${page}&size=${size}`);
     return response;
   } catch (error) {
     return error.response;
