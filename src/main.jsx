@@ -6,10 +6,15 @@ import { ThemeProvider } from '@material-tailwind/react';
 import { BrowserRouter as Router } from 'react-router';
 import ContextProvider from './context/contextApi';
 import { Toaster } from 'react-hot-toast';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
       <ContextProvider>
         <Router>
           <App />
@@ -25,6 +30,7 @@ createRoot(document.getElementById('root')).render(
           }}
         />
       </ContextProvider>
+    </QueryClientProvider>
     </ThemeProvider>
   </StrictMode>
 );

@@ -10,9 +10,9 @@ const App = () => {
   const isAuthenticated = !!getSession();
   const isMobile = useMediaQuery({ query: '(max-width: 1024px)' });
 
-  if (isMobile) {
-    return <Pylon />;
-  }
+  // if (isMobile) {
+  //   return <Pylon />;
+  // }
 
   return isAuthenticated ? <AuthenticatedRoute /> : <OpenRoutes />;
 };

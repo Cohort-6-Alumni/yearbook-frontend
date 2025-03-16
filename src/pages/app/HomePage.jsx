@@ -1,39 +1,27 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getProfiles } from '../../api/index.js';
-import { AppContext } from '../../context/contextApi.jsx';
 import ProfileCard from '../../components/ProfileCard.jsx';
 import AvatarPlaceholder from '../../assets/Profile_avatar_placeholder_large.png';
 import Loader from '../../components/Loader.jsx';
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { Button, IconButton } from "@material-tailwind/react";
+import { Button, IconButton, Typography } from "@material-tailwind/react";
 import { HiOutlineArrowNarrowLeft, HiOutlineArrowNarrowRight } from "react-icons/hi";
+import { useQuery } from '@tanstack/react-query';
 
 const HomePage = ({ searchQuery }) => {
-  const { setUserProfilesCxt } = useContext(AppContext);
-  const [profiles, setProfiles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [hoveredIndex, setHoveredIndex] = useState(null);
   const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
   const [active, setActive] = useState(1);
-
-  useEffect(() => {
-    const fetchProfiles = async (page) => {
-      try {
-        setLoading(true);
-        const res = await getProfiles(page);
-        setProfiles(res?.data.content);
-        setUserProfilesCxt(res?.data.content);
-        setTotalPages(res?.data.totalPages);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching profiles:', err);
-      }
-    };
-
-    fetchProfiles(page);
-  }, [page]);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  
+  const { data, isLoading } = useQuery({
+    queryKey: ['profiles', page],
+    queryFn: () => getProfiles(page).then(res => res.data),
+    keepPreviousData: true,
+  });
+  
+  const profiles = data?.content || [];
+  const totalPages = data?.totalPages || 0;
 
   useEffect(() => {
     document.title = 'Obsidi Academy Alumni Yearbook';
@@ -77,7 +65,6 @@ const HomePage = ({ searchQuery }) => {
     } else {
       const startPage = Math.max(1, active - Math.floor(maxPagesToShow / 2));
       const endPage = Math.min(totalPageCount, startPage + maxPagesToShow - 1);
-      console.log(startPage, endPage);
 
       for (let i = startPage; i <= endPage; i++) {
         pages.push(i);
@@ -92,33 +79,40 @@ const HomePage = ({ searchQuery }) => {
     return pages;
   };
 
-  if (loading === true) {
-    return <Loader />;
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-[50vh] w-full">
+        <Loader />
+      </div>
+    );
   }
 
   if (filteredProfiles.length === 0) {
     return (
-      <div className="flex justify-center items-center h-screen fixed inset-0">
-        <div className="text-center">
-          <h1 className="text-3xl font-semibold">No profiles found</h1>
-          {/* <p className="text-gray-500 mt-2">Please check back later</p> */}
-        </div>
+      <div className="flex flex-col justify-center items-center min-h-[60vh] px-4 py-8 text-center">
+        <Typography variant="h3" className="text-2xl md:text-3xl font-semibold mb-2">
+          No profiles found
+        </Typography>
+        <Typography variant="paragraph" className="text-gray-500 text-base md:text-lg">
+          Try adjusting your search criteria
+        </Typography>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-4 gap-x-2">
+    <div className="container mx-auto px-4 py-6 md:py-8">
+      {/* Grid of profile cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-6 gap-x-4 mb-8">
         {filteredProfiles.map((profile, index) => (
           <motion.div
-            whileHover={{ scale: 1.0 }}
-            whileTap={{ scale: 0.85 }}
-            animate={{ scale: hoveredIndex === index ? 1.0 : 0.9 }}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            animate={{ scale: hoveredIndex === index ? 1.02 : 1 }}
             onHoverStart={() => setHoveredIndex(index)}
             onHoverEnd={() => setHoveredIndex(null)}
             key={profile?.profileId}
-            className="cursor-pointer"
+            className="flex justify-center"
           >
             <ProfileCard
               key={profile?.profileId}
@@ -133,45 +127,54 @@ const HomePage = ({ searchQuery }) => {
           </motion.div>
         ))}
       </div>
-      <div className="flex justify-center gap-4 my-4">
+      
+      {/* Pagination controls */}
+      <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8 mb-10">
         <Button
           variant="text"
-          className="flex items-center gap-2 rounded-full"
+          size="sm"
+          className="flex items-center gap-1 text-sm md:text-base rounded-full"
           onClick={prev}
           disabled={active === 1}
         >
-          <HiOutlineArrowNarrowLeft strokeWidth={2} className="h-4 w-4" /> Previous
+          <HiOutlineArrowNarrowLeft strokeWidth={2} className="h-4 w-4" /> 
+          <span className="hidden sm:inline">Previous</span>
         </Button>
-        <div className="flex items-center gap-2">
+        
+        <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-2">
           {getPageNumbers().map((pageNumber, index) => (
             <IconButton
+              size="sm"
               key={index}
               {...getItemProps(pageNumber)}
               onClick={() => {
-                if (pageNumber === '...') {
-                  setActive(active + 5);
-                  setPage(active + 4);
+                if (pageNumber === '..') {
+                  setActive(active + 3);
+                  setPage(active + 2);
                 } else {
                   setActive(pageNumber);
                   setPage(pageNumber - 1);
                 }
               }}
+              className="w-8 h-8 text-xs md:text-sm"
             >
               {pageNumber}
             </IconButton>
           ))}
         </div>
+        
         <Button
           variant="text"
-          className="flex items-center gap-2 rounded-full"
+          size="sm"
+          className="flex items-center gap-1 text-sm md:text-base rounded-full"
           onClick={next}
           disabled={active === totalPages}
         >
-          Next
+          <span className="hidden sm:inline">Next</span>
           <HiOutlineArrowNarrowRight strokeWidth={2} className="h-4 w-4" />
         </Button>
       </div>
-    </>
+    </div>
   );
 };
 
