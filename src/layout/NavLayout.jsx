@@ -1,25 +1,41 @@
-import { useContext, useEffect, useState, cloneElement, Children, isValidElement } from 'react';
+import { useState, cloneElement, Children, isValidElement } from 'react';
 import HomePage from '../pages/app/HomePage.jsx';
 import Navbar from '../components/Navbar.jsx';
 import PropTypes from 'prop-types';
 import { Button } from '@material-tailwind/react';
 import ProfileMenu from '../components/ProfileMenu.jsx';
-import { AppContext } from '../context/contextApi.jsx';
 import { useNavigate } from 'react-router';
+import { useQuery } from '@tanstack/react-query';
+import { getWithExpiry } from '../utils/storage';
+
+/**
+ * Function to retrieve user data from local storage
+ * @returns {Object|null} User data or null if not found/expired
+ */
+const getUserDataFromStorage = () => {
+  return getWithExpiry('app_user');
+};
 
 const NavLayout = ({ children, showNav = false }) => {
-  const { getUserData } = useContext(AppContext);
-  const [user, setUser] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUser = () => {
-      const userData = getUserData();
-      setUser(userData);
-    };
-    fetchUser();
-  }, []);
+  // Use React Query to manage user data
+  const { data: user } = useQuery({
+    queryKey: ['userData'],
+    // Add a queryFn that returns data from localStorage
+    queryFn: () => {
+      const userData = getUserDataFromStorage();
+      return userData; // This can be null if no data exists
+    },
+    // These settings make it behave like a simple state
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
+    // Don't show error UI for missing user data
+    retry: false,
+    refetchOnReconnect: false,
+  });
 
   const handleLogin = () => {
     navigate('/login');
@@ -51,10 +67,10 @@ const NavLayout = ({ children, showNav = false }) => {
     </div>
   );
 };
+
 export default NavLayout;
 
 NavLayout.propTypes = {
   children: PropTypes.node.isRequired,
   showNav: PropTypes.bool.isRequired,
-  user: PropTypes.object,
 };

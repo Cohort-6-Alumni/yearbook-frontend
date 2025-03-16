@@ -4,12 +4,9 @@ import {
   CardFooter,
   Typography,
   Tooltip,
-  CardHeader,
 } from '@material-tailwind/react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router';
-// import { useContext } from 'react';
-// import { AppContext } from '../context/contextApi.jsx';
 import instagramLogo from '../assets/instagram.png';
 import linkedinLogo from '../assets/linkedin.png';
 
@@ -23,7 +20,6 @@ const ProfileCard = ({
   linkedIn = '',
 }) => {
   const navigate = useNavigate();
-  //   const { getUserProfilesCxt } = useContext(AppContext);
 
   const handleClick = () => {
     navigate(`/profile/${id}`);
@@ -40,7 +36,7 @@ const ProfileCard = ({
           {`${firstName} ${lastName}`}
         </Typography>
         <Typography color="blue-gray" className="font-light text-sm">
-          {currentRole}
+          {currentRole || ''}
         </Typography>
       </CardBody>
       {/* <CardFooter className="flex justify-center gap-4 pb-4 pt-1">
