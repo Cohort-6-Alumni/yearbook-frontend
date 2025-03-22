@@ -2,7 +2,6 @@ import { FiSearch } from 'react-icons/fi';
 import logo from '../assets/logo.png';
 import { useLocation } from 'react-router';
 import PropTypes from 'prop-types';
-// import { Navbar } from '@material-tailwind/react';
 
 const Navbar = ({ component, onSearch }) => {
   const location = useLocation();

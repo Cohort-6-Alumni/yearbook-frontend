@@ -1,6 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { AppContext } from '../context/contextApi';
 import {
   Navbar,
   Typography,
@@ -10,9 +9,10 @@ import {
 } from '@material-tailwind/react';
 import { FiMenu } from 'react-icons/fi';  // Menu icon from react-icons
 import { IoClose } from 'react-icons/io5'; // Close icon from react-icons
+import useAuth from '../hooks/useAuth';
 
 const LandingPageNavbar = () => {
-  const { getSession, logout } = useContext(AppContext);
+  const { getToken, logout } = useAuth();
   const [openNav, setOpenNav] = useState(false);
 
   useEffect(() => {
@@ -36,13 +36,13 @@ const LandingPageNavbar = () => {
         variant="small"
         className="p-1 font-medium"
       >
-        <Link 
+        {/* <Link 
           to="/about"
           onClick={() => setOpenNav(false)} 
           className="flex items-center py-2 px-3 text-base lg:text-lg font-medium text-white transition-colors duration-200 hover:bg-purple-500 hover:text-white rounded"
         >
           About Us
-        </Link>
+        </Link> */}
       </Typography>
       <Typography
         as="li"
@@ -62,7 +62,7 @@ const LandingPageNavbar = () => {
         variant="small"
         className="p-1 font-medium"
       >
-        {!getSession() ? (
+        {!getToken() ? (
           <Link
             to="/login"
             onClick={() => setOpenNav(false)} 
@@ -88,18 +88,18 @@ const LandingPageNavbar = () => {
 
   return (
     <Navbar
-      className="lg:max-w-lg mx-auto px-4 py-2 lg:px-8 lg:py-4 bg-purple-600 bg-opacity-80 rounded-lg shadow-md border-none"
+      className="bg-transparent bg-opacity-100 lg:max-w-sm mx-auto px-3 py-4 lg:px-8 lg:py-4 lg:bg-purple-600 lg:bg-opacity-80 lg:rounded-lg lg:shadow-md border-none"
       shadow={false}
     >
-      <div className="container mx-auto flex items-center justify-center text-white">
+      <div className="container mx-auto flex items-center justify-center text-white ">
         {/* Desktop navigation - centered */}
         <div className="hidden lg:block">{navList}</div>
 
         {/* Mobile view - right aligned hamburger */}
-        <div className="flex w-full items-center justify-start lg:hidden">
+        <div className="flex w-full items-center justify-end lg:hidden">
           <IconButton
             variant="text"
-            className="h-8 w-8 text-inherit hover:bg-transparent focus:bg-transparent active:bg-transparent"
+            className="h-10 w-10 text-inherit bg-purple-600"
             ripple={false}
             onClick={() => setOpenNav(!openNav)}
           >
@@ -114,7 +114,7 @@ const LandingPageNavbar = () => {
 
       {/* Mobile navigation */}
       <Collapse open={openNav}>
-        <div className="container mx-auto">
+        <div className="container mx-auto bg-purple-600 rounded-lg">
           {navList}
         </div>
       </Collapse>

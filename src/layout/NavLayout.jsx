@@ -1,41 +1,21 @@
-import { useState, cloneElement, Children, isValidElement } from 'react';
+import { useState, cloneElement, Children, isValidElement, useEffect } from 'react';
 import HomePage from '../pages/app/HomePage.jsx';
 import Navbar from '../components/Navbar.jsx';
 import PropTypes from 'prop-types';
 import { Button } from '@material-tailwind/react';
 import ProfileMenu from '../components/ProfileMenu.jsx';
 import { useNavigate } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
-import { getWithExpiry } from '../utils/storage';
-
-/**
- * Function to retrieve user data from local storage
- * @returns {Object|null} User data or null if not found/expired
- */
-const getUserDataFromStorage = () => {
-  return getWithExpiry('app_user');
-};
+import useAuth from '../hooks/useAuth';
 
 const NavLayout = ({ children, showNav = false }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
+  const { user, syncUserData } = useAuth();
 
-  // Use React Query to manage user data
-  const { data: user } = useQuery({
-    queryKey: ['userData'],
-    // Add a queryFn that returns data from localStorage
-    queryFn: () => {
-      const userData = getUserDataFromStorage();
-      return userData; // This can be null if no data exists
-    },
-    // These settings make it behave like a simple state
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    staleTime: Infinity,
-    // Don't show error UI for missing user data
-    retry: false,
-    refetchOnReconnect: false,
-  });
+  // Sync user data when the component mounts
+  useEffect(() => {
+    syncUserData();
+  }, [syncUserData]);
 
   const handleLogin = () => {
     navigate('/login');
@@ -49,7 +29,7 @@ const NavLayout = ({ children, showNav = false }) => {
       </Button>
     );
   } else {
-    child = <ProfileMenu user={user} />;
+    child = <ProfileMenu />;
   }
 
   return (

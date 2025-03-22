@@ -1,7 +1,11 @@
 import TopLeftRight from '../assets/curve-1.png';
 import BottomLeft from '../assets/curve-2.png';
+import useAuth from '../hooks/useAuth';
 
 const UserBanner = () => {
+  const { user } = useAuth();
+  const name = user?.firstName || '';
+
   return (
     <div className="mb-6 bg-gradient-to-r from-purple-500 to-blue-500 relative rounded-lg shadow-md p-6">
       <img

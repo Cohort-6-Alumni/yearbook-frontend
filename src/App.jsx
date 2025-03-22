@@ -1,18 +1,18 @@
-import { useContext } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import OpenRoutes from './routes/OpenRoutes.jsx';
 import AuthenticatedRoute from './routes/AuthenticatedRoute.jsx';
-import { AppContext } from './context/contextApi';
-import { useMediaQuery } from 'react-responsive';
-import Pylon from './pages/error/Pylon.jsx';
+import { getWithExpiry } from './utils/storage';
 
 const App = () => {
-  const { getSession } = useContext(AppContext);
-  const isAuthenticated = !!getSession();
-  const isMobile = useMediaQuery({ query: '(max-width: 1024px)' });
+  // Use React Query to check authentication status
+  const { data: token } = useQuery({
+    queryKey: ['authToken'],
+    queryFn: () => getWithExpiry('user_access'),
+    staleTime: Infinity,
+    refetchOnWindowFocus: false
+  });
 
-  // if (isMobile) {
-  //   return <Pylon />;
-  // }
+  const isAuthenticated = !!token;
 
   return isAuthenticated ? <AuthenticatedRoute /> : <OpenRoutes />;
 };

@@ -4,18 +4,15 @@ import './index.css';
 import App from './App.jsx';
 import { ThemeProvider } from '@material-tailwind/react';
 import { BrowserRouter as Router } from 'react-router';
-import ContextProvider from './context/contextApi';
 import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-
 
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ThemeProvider>
-    <QueryClientProvider client={queryClient}>
-      <ContextProvider>
+      <QueryClientProvider client={queryClient}>
         <Router>
           <App />
         </Router>
@@ -29,8 +26,7 @@ createRoot(document.getElementById('root')).render(
             position: 'bottom-center',
           }}
         />
-      </ContextProvider>
-    </QueryClientProvider>
+      </QueryClientProvider>
     </ThemeProvider>
   </StrictMode>
 );

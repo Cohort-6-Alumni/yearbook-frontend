@@ -31,15 +31,15 @@ const LoginPage = () => {
       return response;
     },
     onSuccess: (data) => {
-      // Set user data in cache
-      queryClient.setQueryData(['userData'], data.data);
-      
       // Store token and user data in localStorage with expiry
       const ttl = 3600 * 1000; // 1 hour
       setWithExpiry('user_access', data.auth, ttl);
       setWithExpiry('app_user', data.data, ttl);
       
-      // Navigate to yearbook page
+      // IMPORTANT: Set user data in cache BEFORE navigating
+      queryClient.setQueryData(['userData'], data.data);
+      
+      // Navigate to yearbook page after cache is updated
       navigate('/yearbook');
     },
     onError: (error) => {

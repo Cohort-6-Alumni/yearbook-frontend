@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect, useRef, Fragment } from 'react';
+import { useState, useEffect, useRef, Fragment } from 'react';
 import UserBanner from '../../components/UserBanner.jsx';
 import AvatarPlaceHolder from '../../assets/Profile_avatar_placeholder_large.png';
 import {
@@ -11,35 +11,79 @@ import {
 } from '@material-tailwind/react';
 import { CiEdit } from 'react-icons/ci';
 import { toast } from 'react-hot-toast';
-import { AppContext } from '../../context/contextApi.jsx';
 import { updateProfile, getProfile, getAllMembers } from '../../api';
 import { useParams } from 'react-router';
 import { convertBase64 } from '../../utils/Helper.js';
 import ImageCropper from '../../components/ImageCropper';
 import Loader from '../../components/Loader.jsx';
+import useAuth from '../../hooks/useAuth';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const Profile = () => {
   const [open, setOpen] = useState(-1);
-  const { getUserData, getSession, setMembersListCxt, getMembersListCxt } = useContext(AppContext);
   const { profileId } = useParams();
   const [formData, setFormData] = useState({});
   const [openMenu, setOpenMenu] = useState(false);
-  const [isFetching, setIsFetching] = useState(false);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [uploadImageData, setUploadImageData] = useState(undefined);
   const [imageSrc, setImageSrc] = useState(AvatarPlaceHolder);
   const imageSelectRef = useRef();
   const menuRef = useRef(null);
-  const token = getSession();
+  const { user, getToken } = useAuth();
+  const queryClient = useQueryClient();
+  const token = getToken();
+
+  // Fetch members query
+  const { data: membersList = [] } = useQuery({
+    queryKey: ['membersList'],
+    queryFn: async () => {
+      try {
+        const response = await getAllMembers(token);
+        return response?.data || [];
+      } catch (err) {
+        console.error('Error fetching members:', err);
+        return [];
+      }
+    },
+    enabled: !!token,
+  });
+
+  // Fetch profile query
+  const { data: profile, isLoading: isProfileLoading } = useQuery({
+    queryKey: ['profile', profileId],
+    queryFn: async () => {
+      try {
+        const response = await getProfile(profileId);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+        return null;
+      }
+    },
+    enabled: !!profileId,
+  });
+
+  // Update profile mutation
+  const updateProfileMutation = useMutation({
+    mutationFn: async (data) => {
+      return await updateProfile(token, data);
+    },
+    onSuccess: () => {
+      toast.success('Profile updated successfully');
+      // Invalidate queries to refresh data
+      queryClient.invalidateQueries({ queryKey: ['profile', profileId] });
+    },
+    onError: (error) => {
+      console.error('Error updating profile:', error);
+      toast.error('An error occurred. Please try again');
+    }
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      await fetchMembers();
-      await fetchProfile();
-    };
-
-    fetchData();
-  }, []);
+    if (profile) {
+      setFormData(profile);
+    }
+  }, [profile]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -64,30 +108,6 @@ const Profile = () => {
     document.title = 'User Profile | Yearbook';
   }, []);
 
-  const fetchMembers = async () => {
-    setIsFetching(true);
-    try {
-      const res = await getAllMembers(token);
-      setMembersListCxt(res?.data);
-    } catch (err) {
-      console.error('Error fetching members:', err);
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
-  const fetchProfile = async () => {
-    setIsFetching(true);
-    try {
-      const response = await getProfile(profileId);
-      setFormData(response.data);
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-    } finally {
-      setIsFetching(false);
-    }
-  };
-
   const handleOpen = (value) => setOpen(open === value ? -1 : value);
 
   const handleChange = (e) => {
@@ -98,7 +118,7 @@ const Profile = () => {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     const requiredFields = [
       'previousField',
       'currentRole',
@@ -114,7 +134,6 @@ const Profile = () => {
       'howYouOvercameIt',
       'mostLikelyToQuestion',
       'mostLikelyToAnswer',
-
     ];
 
     const isFormValid = requiredFields.every((field) => formData[field]);
@@ -124,21 +143,11 @@ const Profile = () => {
       return;
     }
 
-    try {
-      const response = await updateProfile(token, formData);
-      if (response.status === 200) {
-        toast.success('Profile updated successfully');
-      }
-    } catch (error) {
-      console.error('Error updating profile:', error);
-      toast.error('An error occurred. Please try again');
-    }
+    updateProfileMutation.mutate(formData);
   };
 
-  const options = getMembersListCxt();
-
-  const filteredOptions = options.filter((option) =>
-    option.toLowerCase().includes(formData?.mostLikelyToAnswer?.toLowerCase())
+  const filteredOptions = membersList.filter((option) =>
+    option.toLowerCase().includes(formData?.mostLikelyToAnswer?.toLowerCase() || '')
   );
 
   const closeModal = () => {
@@ -162,7 +171,7 @@ const Profile = () => {
     }));
   };
 
-  if (isFetching) {
+  if (isProfileLoading || updateProfileMutation.isPending) {
     return <Loader />;
   }
 
@@ -202,7 +211,7 @@ const Profile = () => {
               <div className="flex pt-6">
                 <div>
                   <p className="text-[14px] font-semibold mb-1">
-                    {`${getUserData().firstName} ${getUserData().lastName}`}
+                    {`${user?.firstName || ''} ${user?.lastName || ''}`}
                   </p>
                   <p className="text-[14px] font-light">{formData?.currentRole || ''}</p>
                 </div>

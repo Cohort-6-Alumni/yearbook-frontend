@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useEffect } from 'react';
 import { Route, Routes, Navigate } from 'react-router';
 import Login from '../pages/user/Login';
 import CompleteSignup from '../pages/app/CompleteSignUp.jsx';
@@ -16,6 +16,7 @@ import ErrorPage from '../pages/error/ErrorPage.jsx';
 
 const AuthenticatedRoute = () => {
   useTokenExpiry();
+  
   return (
     <Routes>
       <Route exact path="/login" element={<Login />} />
