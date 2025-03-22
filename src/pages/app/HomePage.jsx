@@ -3,32 +3,51 @@ import { getProfiles } from '../../api/index.js';
 import ProfileCard from '../../components/ProfileCard.jsx';
 import AvatarPlaceholder from '../../assets/Profile_avatar_placeholder_large.png';
 import Loader from '../../components/Loader.jsx';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { Button, IconButton, Typography } from "@material-tailwind/react";
+import { Button, IconButton, Typography, Select, Option } from "@material-tailwind/react";
 import { HiOutlineArrowNarrowLeft, HiOutlineArrowNarrowRight } from "react-icons/hi";
 import { useQuery } from '@tanstack/react-query';
+import { useSearchParams, useNavigate } from 'react-router';
 
 const HomePage = ({ searchQuery }) => {
-  const [page, setPage] = useState(0);
-  const [active, setActive] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+  
+  // Get page from URL or default to 1
+  const initialPage = parseInt(searchParams.get('page')) || 1;
+  const initialSize = parseInt(searchParams.get('size')) || 12;
+  
+  const [pageSize, setPageSize] = useState(initialSize);
+  const [active, setActive] = useState(initialPage);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   
+  // Calculate zero-based page index for API
+  const pageIndex = active - 1;
+  
   const { data, isLoading } = useQuery({
-    queryKey: ['profiles', page],
-    queryFn: () => getProfiles(page).then(res => res.data),
+    queryKey: ['profiles', pageIndex, pageSize],
+    queryFn: () => getProfiles(pageIndex, pageSize).then(res => res.data),
     keepPreviousData: true,
   });
   
   const profiles = data?.content || [];
   const totalPages = data?.totalPages || 0;
 
+  // Update URL when page or size changes
+  useEffect(() => {
+    const params = new URLSearchParams();
+    params.set('page', active.toString());
+    params.set('size', pageSize.toString());
+    setSearchParams(params);
+  }, [active, pageSize, setSearchParams]);
+
   useEffect(() => {
     document.title = 'Obsidi Academy Alumni Yearbook';
   }, []);
 
   const filteredProfiles = profiles.filter((profile) =>
-    `${profile.firstName} ${profile.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())
+    `${profile.firstName} ${profile.lastName}`.toLowerCase().includes(searchQuery?.toLowerCase() || '')
   );
 
   const getItemProps = (index) => ({
@@ -36,7 +55,6 @@ const HomePage = ({ searchQuery }) => {
     color: "gray",
     onClick: () => {
       setActive(index);
-      setPage(index - 1);
     },
     className: "rounded-full",
   });
@@ -44,13 +62,16 @@ const HomePage = ({ searchQuery }) => {
   const next = () => {
     if (active === totalPages) return;
     setActive(active + 1);
-    setPage(active);
   };
 
   const prev = () => {
     if (active === 1) return;
     setActive(active - 1);
-    setPage(active - 2);
+  };
+
+  const handleSizeChange = (value) => {
+    setPageSize(parseInt(value));
+    setActive(1); // Reset to first page when changing size
   };
 
   const getPageNumbers = () => {
@@ -79,6 +100,24 @@ const HomePage = ({ searchQuery }) => {
     return pages;
   };
 
+  const handleProfileClick = (profileId) => {
+    // Save the current page/size in localStorage before navigating
+    localStorage.setItem('yearbook_last_page', active.toString());
+    localStorage.setItem('yearbook_last_size', pageSize.toString());
+    navigate(`/profile/${profileId}`);
+  };
+
+  // Detect screen size for responsive pagination
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 640);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth < 640);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center min-h-[50vh] w-full">
@@ -102,33 +141,59 @@ const HomePage = ({ searchQuery }) => {
 
   return (
     <div className="container mx-auto px-4 py-6 md:py-8">
-      {/* Grid of profile cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-6 gap-x-4 mb-8">
-        {filteredProfiles.map((profile, index) => (
-          <motion.div
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            animate={{ scale: hoveredIndex === index ? 1.02 : 1 }}
-            onHoverStart={() => setHoveredIndex(index)}
-            onHoverEnd={() => setHoveredIndex(null)}
-            key={profile?.profileId}
-            className="flex justify-center"
+      {/* Per-page selector - centered on mobile */}
+      <div className="flex justify-center sm:justify-end mb-4">
+        <div className="sm:w-24">
+          <Select 
+            label="Per page" 
+            value={pageSize.toString()} 
+            onChange={handleSizeChange}
+            className="text-sm"
           >
-            <ProfileCard
-              key={profile?.profileId}
-              id={profile?.profileId}
-              instagram={profile?.instagram}
-              picture={profile?.picture || AvatarPlaceholder}
-              firstName={profile?.firstName}
-              lastName={profile?.lastName}
-              currentRole={profile?.currentRole}
-              linkedIn={profile?.linkedIn}
-            />
-          </motion.div>
-        ))}
+            <Option value="8">8</Option>
+            <Option value="12">12</Option>
+            <Option value="16">16</Option>
+            <Option value="24">24</Option>
+          </Select>
+        </div>
       </div>
+
+      {/* Grid of profile cards with animation */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={active + pageSize} // Re-render when page changes
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-6 gap-x-4 mb-8"
+        >
+          {filteredProfiles.map((profile, index) => (
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              animate={{ scale: hoveredIndex === index ? 1.02 : 1 }}
+              onHoverStart={() => setHoveredIndex(index)}
+              onHoverEnd={() => setHoveredIndex(null)}
+              key={profile?.profileId}
+              className="flex justify-center"
+              onClick={() => handleProfileClick(profile?.profileId)}
+            >
+              <ProfileCard
+                id={profile?.profileId}
+                instagram={profile?.instagram}
+                picture={profile?.picture || AvatarPlaceholder}
+                firstName={profile?.firstName}
+                lastName={profile?.lastName}
+                currentRole={profile?.currentRole}
+                linkedIn={profile?.linkedIn}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
       
-      {/* Pagination controls */}
+      {/* Pagination controls - responsive design */}
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mt-8 mb-10">
         <Button
           variant="text"
@@ -141,27 +206,33 @@ const HomePage = ({ searchQuery }) => {
           <span className="hidden sm:inline">Previous</span>
         </Button>
         
-        <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-2">
-          {getPageNumbers().map((pageNumber, index) => (
-            <IconButton
-              size="sm"
-              key={index}
-              {...getItemProps(pageNumber)}
-              onClick={() => {
-                if (pageNumber === '..') {
-                  setActive(active + 3);
-                  setPage(active + 2);
-                } else {
-                  setActive(pageNumber);
-                  setPage(pageNumber - 1);
-                }
-              }}
-              className="w-8 h-8 text-xs md:text-sm"
-            >
-              {pageNumber}
-            </IconButton>
-          ))}
-        </div>
+        {!isSmallScreen && (
+          <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto py-2">
+            {getPageNumbers().map((pageNumber, index) => (
+              <IconButton
+                size="sm"
+                key={index}
+                {...getItemProps(pageNumber)}
+                onClick={() => {
+                  if (pageNumber === '..') {
+                    setActive(active + 3);
+                  } else {
+                    setActive(pageNumber);
+                  }
+                }}
+                className="w-8 h-8 text-xs md:text-sm"
+              >
+                {pageNumber}
+              </IconButton>
+            ))}
+          </div>
+        )}
+        
+        {isSmallScreen && (
+          <Typography className="text-sm">
+            Page {active} of {totalPages}
+          </Typography>
+        )}
         
         <Button
           variant="text"
