@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router';
+import { useParams } from 'react-router-dom';
 import useFetchProfile from '../../hooks/useFetchProfile.jsx';
 import Loader from '../../components/Loader.jsx';
 import AvatarPlaceholder from '../../assets/Profile_avatar_placeholder_large.png';
@@ -9,6 +9,7 @@ import { Card, CardBody, CardHeader, Typography, Alert } from '@material-tailwin
 
 const ReadOnlyProfile = () => {
   const { profileId } = useParams();
+ 
   const { data: profile, isLoading, error } = useFetchProfile(profileId);
 
   useEffect(() => {
@@ -19,7 +20,9 @@ const ReadOnlyProfile = () => {
       document.title = 'Profile | Yearbook';
     }
     
-    // Not resetting the title on unmount, as HomePage will handle its own title
+    return () => {
+      document.title = 'Yearbook';
+    };
   }, [profile]);
 
   if (isLoading) {

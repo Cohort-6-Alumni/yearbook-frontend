@@ -31,19 +31,19 @@ const LandingPageNavbar = () => {
   // Navigation menu for desktop and mobile
   const navList = (
     <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
-      <Typography
+      {/* <Typography
         as="li"
         variant="small"
         className="p-1 font-medium"
       >
-        {/* <Link 
+        <Link 
           to="/about"
           onClick={() => setOpenNav(false)} 
           className="flex items-center py-2 px-3 text-base lg:text-lg font-medium text-white transition-colors duration-200 hover:bg-purple-500 hover:text-white rounded"
         >
           About Us
-        </Link> */}
-      </Typography>
+        </Link>
+      </Typography> */}
       <Typography
         as="li"
         variant="small"
