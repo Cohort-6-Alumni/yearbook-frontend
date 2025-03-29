@@ -97,7 +97,7 @@ const ReadOnlyProfile = () => {
               <div className="flex space-x-3">
                 {profile?.instagram && (
                   <a 
-                    href={profile?.instagram} 
+                    href={DOMPurify.sanitize(profile?.instagram)} 
                     target="_blank" 
                     rel="noreferrer"
                     className="transition-transform hover:scale-110"
