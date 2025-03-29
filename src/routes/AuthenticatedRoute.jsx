@@ -1,5 +1,4 @@
-import { useEffect, useContext } from 'react';
-import { Route, Routes, Navigate } from 'react-router';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import Login from '../pages/user/Login';
 import CompleteSignup from '../pages/app/CompleteSignUp.jsx';
 import HomePage from '../pages/app/HomePage.jsx';
@@ -12,10 +11,14 @@ import ReadOnlyProfile from '../pages/app/ReadOnlyProfile.jsx';
 import CustomBreadcrumbs from '../components/CustomBreadcrumbs.jsx';
 import CustomFooter from '../components/CustomFooter.jsx';
 import useTokenExpiry from '../hooks/useTokenExpiry.jsx';
+import useUserActivity from '../hooks/useUserActivity.jsx';
 import ErrorPage from '../pages/error/ErrorPage.jsx';
 
 const AuthenticatedRoute = () => {
-  useTokenExpiry();
+  // Track user activity and manage token expiry
+  const isUserActive = useUserActivity();
+  useTokenExpiry(isUserActive ? 60000 : 300000, 300000); // Check more frequently when user is active
+  
   return (
     <Routes>
       <Route exact path="/login" element={<Login />} />

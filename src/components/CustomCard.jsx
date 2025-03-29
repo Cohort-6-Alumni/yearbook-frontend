@@ -1,9 +1,8 @@
-import { useContext } from 'react';
 import { useNavigate } from 'react-router';
 import instagramLogo from '../assets/instagram.png';
 import linkedin from '../assets/linkedin.png';
-import { AppContext } from '../context/contextApi.jsx';
 import PropTypes from 'prop-types';
+import useProfiles from '../hooks/useProfiles';
 
 const CustomCard = ({
   bio,
@@ -16,7 +15,7 @@ const CustomCard = ({
   id,
 }) => {
   const navigate = useNavigate();
-  const { getUserProfilesCxt } = useContext(AppContext);
+  const { profiles } = useProfiles();
 
   const handleClick = () => {
     navigate(`/public_profile/${id}`);
