@@ -19,9 +19,9 @@ const LandingPage = () => {
     'yearbook'
   );
 
-  useEffect(() => {
-    document.title = 'Obsidi Academy Alumni Yearbook';
-  }, []);
+  // useEffect(() => {
+  //   document.title = 'Obsidi Academy Alumni Yearbook';
+  // }, []);
 
   const itemsPerPage = {
     sm: 1,

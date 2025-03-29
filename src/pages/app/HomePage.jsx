@@ -8,15 +8,16 @@ import PropTypes from 'prop-types';
 import { Button, IconButton, Typography, Select, Option } from "@material-tailwind/react";
 import { HiOutlineArrowNarrowLeft, HiOutlineArrowNarrowRight } from "react-icons/hi";
 import { useQuery } from '@tanstack/react-query';
-import { useSearchParams, useNavigate } from 'react-router';
+import { useSearchParams, useNavigate, useLocation } from 'react-router';
 
 const HomePage = ({ searchQuery }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   
   // Get page from URL or default to 1
-  const initialPage = parseInt(searchParams.get('page')) || 1;
-  const initialSize = parseInt(searchParams.get('size')) || 12;
+  const initialPage = 1;
+  const initialSize = 12;
   
   const [pageSize, setPageSize] = useState(initialSize);
   const [active, setActive] = useState(initialPage);
@@ -25,7 +26,7 @@ const HomePage = ({ searchQuery }) => {
   // Calculate zero-based page index for API
   const pageIndex = active - 1;
   
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ['profiles', pageIndex, pageSize],
     queryFn: () => getProfiles(pageIndex, pageSize).then(res => res.data),
     keepPreviousData: true,
@@ -34,17 +35,22 @@ const HomePage = ({ searchQuery }) => {
   const profiles = data?.content || [];
   const totalPages = data?.totalPages || 0;
 
-  // Update URL when page or size changes
   useEffect(() => {
-    const params = new URLSearchParams();
-    params.set('page', active.toString());
-    params.set('size', pageSize.toString());
-    setSearchParams(params);
-  }, [active, pageSize, setSearchParams]);
-
-  useEffect(() => {
-    document.title = 'Obsidi Academy Alumni Yearbook';
-  }, []);
+    if (location.pathname.includes('yearbook')) {
+      
+        const lastPage = localStorage.getItem('yearbook_last_page');
+        const lastSize = localStorage.getItem('yearbook_last_size');
+        
+        if (lastPage && lastSize) {
+          setActive(parseInt(lastPage));
+          setPageSize(parseInt(lastSize));
+          
+        }
+  
+      refetch(); // Call refetch after setting state
+    }
+  }, [location, refetch]);
+  
 
   const filteredProfiles = profiles.filter((profile) =>
     `${profile.firstName} ${profile.lastName}`.toLowerCase().includes(searchQuery?.toLowerCase() || '')

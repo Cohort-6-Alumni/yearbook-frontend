@@ -24,6 +24,7 @@ export const useAuth = () => {
     queryFn: getUserDataFromStorage,
     refetchOnWindowFocus: false,
     staleTime: Infinity,
+    retry: 2, // Retry twice in case of failure
   });
 
   // Set session token with expiry
@@ -52,6 +53,9 @@ export const useAuth = () => {
   const updateUserMutation = useMutation({
     mutationFn: async (userData) => {
       const token = getToken();
+      if (!token) {
+        throw new Error('No authentication token found');
+      }
       const response = await updateAccount(token, userData);
       return response.data;
     },
@@ -63,15 +67,26 @@ export const useAuth = () => {
       // Update React Query cache
       queryClient.setQueryData(['userData'], data);
     },
+    onError: (error) => {
+      console.error('Error updating user:', error);
+      // Don't logout on update error, just report it
+    }
   });
 
   // Function to manually sync user data
-  const syncUserData = () => {
+  const syncUserData = async () => {
     const userData = getUserDataFromStorage();
     if (userData) {
       queryClient.setQueryData(['userData'], userData);
+      return userData;
     }
-    return refetch();
+    
+    try {
+      return await refetch().then(result => result.data);
+    } catch (error) {
+      console.error('Error syncing user data:', error);
+      return null;
+    }
   };
 
   return {

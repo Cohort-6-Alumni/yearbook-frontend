@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router';
 import { getWithExpiry, setWithExpiry } from '../utils/storage';
 import { useQueryClient } from '@tanstack/react-query';
@@ -10,6 +10,7 @@ const useTokenExpiry = (
 ) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const isRefreshingRef = useRef(false);
 
   const logout = useCallback(() => {
     // Clear user data from React Query cache
@@ -20,22 +21,30 @@ const useTokenExpiry = (
     localStorage.removeItem('user_access');
     localStorage.removeItem('app_user');
     
-    navigate('/login');
+    navigate('/login', { replace: true });
   }, [navigate, queryClient]);
 
   const refreshUserToken = useCallback(async (token) => {
+    if (isRefreshingRef.current) {
+      return true; // Return true to prevent multiple refresh attempts
+    }
+    
     try {
+      isRefreshingRef.current = true;
       const response = await refreshToken(token);
       if (response.status === 200 && response.auth) {
         // Update token with new expiry
         const ttl = 3600 * 1000; // 1 hour in milliseconds
         setWithExpiry('user_access', response.auth, ttl);
         queryClient.setQueryData(['authToken'], response.auth);
+        isRefreshingRef.current = false;
         return true;
       }
+      isRefreshingRef.current = false;
       return false;
     } catch (error) {
       console.error('Error refreshing token:', error);
+      isRefreshingRef.current = false;
       return false;
     }
   }, [queryClient]);
@@ -74,14 +83,17 @@ const useTokenExpiry = (
           const refreshed = await refreshUserToken(token);
           if (!refreshed) {
             // If refresh fails and token is very close to expiry, logout
-            if (timeRemaining < 30000) { // less than 30 seconds
+            if (timeRemaining < 10000) { // less than 10 seconds (previously 30 seconds)
               logout();
             }
           }
         }
       } catch (error) {
         console.error('Error checking token:', error);
-        logout();
+        // Only logout if there's a critical error parsing the token
+        if (error instanceof SyntaxError) {
+          logout();
+        }
       }
     };
 

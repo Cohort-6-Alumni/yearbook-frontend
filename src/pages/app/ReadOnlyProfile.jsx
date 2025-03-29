@@ -12,9 +12,14 @@ const ReadOnlyProfile = () => {
   const { data: profile, isLoading, error } = useFetchProfile(profileId);
 
   useEffect(() => {
-    document.title = profile 
-      ? `${profile.firstName} ${profile.lastName} | Yearbook` 
-      : 'Profile | Yearbook';
+    // Update document title when profile data loads
+    if (profile) {
+      document.title = `${profile.firstName} ${profile.lastName} | Yearbook`;
+    } else {
+      document.title = 'Profile | Yearbook';
+    }
+    
+    // Not resetting the title on unmount, as HomePage will handle its own title
   }, [profile]);
 
   if (isLoading) {
