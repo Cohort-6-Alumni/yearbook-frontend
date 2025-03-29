@@ -6,6 +6,7 @@ import AvatarPlaceholder from '../../assets/Profile_avatar_placeholder_large.png
 import instagramLogo from '../../assets/instagram.png';
 import linkedinLogo from '../../assets/linkedin.png';
 import { Card, CardBody, CardHeader, Typography, Alert } from '@material-tailwind/react';
+import DOMPurify from 'dompurify';
 
 const ReadOnlyProfile = () => {
   const { profileId } = useParams();
@@ -106,7 +107,7 @@ const ReadOnlyProfile = () => {
                 )}
                 {profile?.linkedIn && (
                   <a 
-                    href={profile?.linkedIn} 
+                    href={DOMPurify.sanitize(profile?.linkedIn)} 
                     target="_blank" 
                     rel="noreferrer"
                     className="transition-transform hover:scale-110"
