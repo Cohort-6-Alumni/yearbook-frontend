@@ -1,98 +1,124 @@
-import { useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router';
-import { AppContext } from '../context/contextApi';
+import {
+  Navbar,
+  Typography,
+  Button,
+  IconButton,
+  Collapse,
+} from '@material-tailwind/react';
+import { FiMenu } from 'react-icons/fi';  // Menu icon from react-icons
+import { IoClose } from 'react-icons/io5'; // Close icon from react-icons
+import useAuth from '../hooks/useAuth';
 
 const LandingPageNavbar = () => {
-  const { getSession, logout } = useContext(AppContext);
+  const { getToken, logout } = useAuth();
+  const [openNav, setOpenNav] = useState(false);
 
+  useEffect(() => {
+    // Add resize listener to close mobile nav on larger screens
+    const handleResize = () => {
+      window.innerWidth >= 960 && setOpenNav(false);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Navigation menu for desktop and mobile
+  const navList = (
+    <ul className="mt-2 mb-4 flex flex-col gap-2 lg:mb-0 lg:mt-0 lg:flex-row lg:items-center lg:gap-6">
+      {/* <Typography
+        as="li"
+        variant="small"
+        className="p-1 font-medium"
+      >
+        <Link 
+          to="/about"
+          onClick={() => setOpenNav(false)} 
+          className="flex items-center py-2 px-3 text-base lg:text-lg font-medium text-white transition-colors duration-200 hover:bg-purple-500 hover:text-white rounded"
+        >
+          About Us
+        </Link>
+      </Typography> */}
+      <Typography
+        as="li"
+        variant="small"
+        className="p-1 font-medium"
+      >
+        <Link 
+          to="/yearbook"
+          onClick={() => setOpenNav(false)} 
+          className="flex items-center py-2 px-3 text-base lg:text-lg font-medium text-white transition-colors duration-200 hover:bg-purple-500 hover:text-white rounded"
+        >
+          Yearbook
+        </Link>
+      </Typography>
+      <Typography
+        as="li"
+        variant="small"
+        className="p-1 font-medium"
+      >
+        {!getToken() ? (
+          <Link
+            to="/login"
+            onClick={() => setOpenNav(false)} 
+            className="flex items-center py-2 px-3 text-base lg:text-lg font-medium text-white transition-colors duration-200 hover:bg-purple-500 hover:text-white rounded"
+          >
+            Login
+          </Link>
+        ) : (
+          <Button
+            onClick={() => {
+              logout();
+              setOpenNav(false);
+            }}
+            variant="text"
+            className="flex items-center py-2 px-3 text-base lg:text-lg font-medium text-white transition-colors duration-200 hover:bg-purple-500 hover:text-white rounded normal-case w-full justify-start"
+          >
+            Logout
+          </Button>
+        )}
+      </Typography>
+    </ul>
+  );
 
   return (
-    <>
-      <header className="max-w-xxl mx-auto bg-purple-600 bg-opacity-80 rounded-lg shadow-md">
-        <div className="px-4 mx-auto sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            <button
-              type="button"
-              className="inline-flex p-2 text-black transition-all duration-200 rounded-md lg:hidden focus:bg-gray-100 hover:bg-gray-100"
-            >
-              {/* <!-- Menu open: "hidden", Menu closed: "block" --> */}
-              <svg
-                className="block w-6 h-6"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M4 8h16M4 16h16"
-                ></path>
-              </svg>
+    <Navbar
+      className="bg-transparent bg-opacity-100 lg:max-w-sm mx-auto px-3 py-4 lg:px-8 lg:py-4 lg:bg-purple-600 lg:bg-opacity-80 lg:rounded-lg lg:shadow-md border-none"
+      shadow={false}
+    >
+      <div className="container mx-auto flex items-center justify-center text-white ">
+        {/* Desktop navigation - centered */}
+        <div className="hidden lg:block">{navList}</div>
 
-              {/* <!-- Menu open: "block", Menu closed: "hidden" --> */}
-              <svg
-                className="hidden w-6 h-6"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
-
-            <div className="hidden lg:flex lg:items-center lg:justify-center lg:space-x-10">
-              {/* <Link
-                to="/"
-                className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
-                aria-current="page"
-              >
-                Home
-              </Link> */}
-              <Link
-                to="/about"
-                className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
-                aria-current="page"
-              >
-                About Us
-              </Link>
-              <Link
-                to="/yearbook"
-                className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
-                aria-current="page"
-              >
-                Yearbook
-              </Link>
-              {!getSession() ? (
-                <Link
-                  to="/login"
-                  className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
-                  aria-current="page"
-                >
-                  Login
-                </Link>
-              ) : (
-                <Link
-                onClick={logout}
-                  to="#"
-                  className="block py-2 px-3 text-xl font-semibold text-white transition-all duration-200 hover:text-opacity-80"
-                  aria-current="page"
-                >
-                  Logout
-                </Link>
-              )}
-            </div>
-          </div>
+        {/* Mobile view - right aligned hamburger */}
+        <div className="flex w-full items-center justify-end lg:hidden">
+          <IconButton
+            variant="text"
+            className="h-10 w-10 text-inherit bg-purple-600"
+            ripple={false}
+            onClick={() => setOpenNav(!openNav)}
+          >
+            {openNav ? (
+              <IoClose className="h-6 w-6 text-white" />
+            ) : (
+              <FiMenu className="h-6 w-6 text-white" />
+            )}
+          </IconButton>
         </div>
-      </header>
-    </>
+      </div>
+
+      {/* Mobile navigation */}
+      <Collapse open={openNav}>
+        <div className="container mx-auto bg-purple-600 rounded-lg">
+          {navList}
+        </div>
+      </Collapse>
+    </Navbar>
   );
 };
 

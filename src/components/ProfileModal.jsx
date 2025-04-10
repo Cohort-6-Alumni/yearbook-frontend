@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -8,14 +8,14 @@ import {
   DialogFooter,
   Typography,
 } from '@material-tailwind/react';
-import { AppContext } from '../context/contextApi.jsx';
 import { updateProfile } from '../api';
 import { useNavigate } from 'react-router';
 import ProfileData from '../data/ProfileData.js';
+import useAuth from '../hooks/useAuth';
 
 const ProfileModal = ({ openProp, onClose }) => {
   const [open, setOpen] = useState(openProp);
-  const { setUserData, getSession } = useContext(AppContext);
+  const { setUserData, getToken } = useAuth();
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -26,7 +26,7 @@ const ProfileModal = ({ openProp, onClose }) => {
   };
 
   const createProfile = async () => {
-    const token = getSession();
+    const token = getToken();
     try {
       const response = await updateProfile(token, ProfileData);
       setUserData(response.data);
@@ -43,7 +43,7 @@ const ProfileModal = ({ openProp, onClose }) => {
   }, [openProp]);
 
   return (
-    <>
+    
       <Dialog open={open} handler={handleClose}>
         <DialogHeader>
           <Typography variant="h5" color="blue-gray" className="text-center">
@@ -79,7 +79,7 @@ const ProfileModal = ({ openProp, onClose }) => {
           </Button>
         </DialogFooter>
       </Dialog>
-    </>
+    
   );
 };
 

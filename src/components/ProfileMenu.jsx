@@ -10,18 +10,17 @@ import {
 } from '@material-tailwind/react';
 import { IoPersonCircleOutline, IoCogSharp, IoPowerSharp } from 'react-icons/io5';
 import AvatarPlaceholder from '../assets/Profile_avatar_placeholder_large.png';
-import { AppContext } from '../context/contextApi';
 import { useNavigate } from 'react-router';
 import ProfileModal from './ProfileModal';
+import useAuth from '../hooks/useAuth';
 
 const ProfileMenu = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [profilePicture, setProfilePicture] = useState(AvatarPlaceholder);
 
-  const { logout, getUserData } = React.useContext(AppContext);
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
-  const user = getUserData();
 
   useEffect(() => {
     setProfilePicture(user?.picture || AvatarPlaceholder);
@@ -30,6 +29,7 @@ const ProfileMenu = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+  
   const handleLogout = () => {
     logout();
     navigate('/login');
@@ -44,6 +44,7 @@ const ProfileMenu = () => {
       navigate(`/user/profile/${userProfileId}/edit`);
     }
   };
+  
   // profile menu component
   const profileMenuItems = [
     {
@@ -62,6 +63,7 @@ const ProfileMenu = () => {
       onClick: () => handleLogout(),
     },
   ];
+  
   return (
     <>
       <ProfileModal openProp={isModalOpen} onClose={handleCloseModal} />
@@ -127,9 +129,5 @@ const ProfileMenu = () => {
     </>
   );
 };
-
-// ProfileMenu.propTypes = {
-//   user: PropTypes.object,
-// };
 
 export default ProfileMenu;

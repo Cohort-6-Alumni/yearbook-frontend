@@ -152,3 +152,23 @@ export const resetPassword = async (token, password) => {
     return error.response;
   }
 }
+
+export const refreshToken = async (token) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/user/refresh-token`,
+      {},
+      {
+        headers: {
+          Authorization: frameToken(token),
+        },
+      }
+    );
+    return {
+      status: response.status,
+      auth: response.headers.authorization,
+    };
+  } catch (error) {
+    return error.response;
+  }
+};

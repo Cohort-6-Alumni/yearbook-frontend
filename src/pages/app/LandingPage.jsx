@@ -12,29 +12,63 @@ import useFetchContributors from '../../hooks/useFetchContributors.jsx';
 const LandingPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState(null);
-  const { contributors, loading, error } = useFetchContributors(
+  const { data: contributors = [], isLoading, error } = useFetchContributors(
     'Cohort-6-Alumni',
     'yearbook-frontend',
     'Cohort-6-Alumni',
     'yearbook'
   );
 
+  // useEffect(() => {
+  //   document.title = 'Obsidi Academy Alumni Yearbook';
+  // }, []);
+
+  const itemsPerPage = {
+    sm: 1,
+    md: 2,
+    lg: 3,
+    xl: 4
+  };
+
+  // Get the current itemsPerPage based on screen width
+  const getCurrentItemsPerPage = () => {
+    if (typeof window !== 'undefined') {
+      const width = window.innerWidth;
+      if (width < 640) return itemsPerPage.sm;
+      if (width < 768) return itemsPerPage.md;
+      if (width < 1024) return itemsPerPage.lg;
+      return itemsPerPage.xl;
+    }
+    return itemsPerPage.md; // Default fallback
+  };
+
+  const [currentItemsPerPage, setCurrentItemsPerPage] = useState(4);
+
+  // Update items per page when window resizes
   useEffect(() => {
-    document.title = 'Obsidi Academy Alumni Yearbook';
+    const handleResize = () => {
+      setCurrentItemsPerPage(getCurrentItemsPerPage());
+    };
+
+    // Set initial value
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const itemsPerPage = 4;
-
   const prevSlide = () => {
+    if (!contributors?.length) return;
     const isFirstSlide = currentIndex === 0;
     const newIndex = isFirstSlide
-      ? Math.ceil(contributors.length / itemsPerPage) - 1
+      ? Math.ceil(contributors.length / currentItemsPerPage) - 1
       : currentIndex - 1;
     setCurrentIndex(newIndex);
   };
 
   const nextSlide = () => {
-    const isLastSlide = currentIndex === Math.ceil(contributors.length / itemsPerPage) - 1;
+    if (!contributors?.length) return;
+    const isLastSlide = currentIndex === Math.ceil(contributors.length / currentItemsPerPage) - 1;
     const newIndex = isLastSlide ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
   };
@@ -43,109 +77,132 @@ const LandingPage = () => {
     setCurrentIndex(slideIndex);
   };
 
-  const startIndex = currentIndex * itemsPerPage;
-  const selectedContributors = contributors.slice(startIndex, startIndex + itemsPerPage);
+  const startIndex = currentIndex * currentItemsPerPage;
+  const selectedContributors = contributors?.slice(startIndex, startIndex + currentItemsPerPage) || [];
 
   return (
-    <>
-      <div className="flex overflow-hidden flex-col px-8 py-11 bg-white max-md:px-5">
-        <section className=" bg-opacity-30 py-10 sm:py-16 lg:py-8">
-          <div className="bg-[#8627f115] flex flex-col items-center pt-6 pb-11 w-full max-md:px-5 max-md:mt-10 max-md:mr-1.5 max-md:max-w-full mx-auto max-w-7xl overflow-hidden py-10 pr-7 pl-16 max-md:px-5 max-md:mr-1.5 max-md:max-w-full rounded-3xl">
-            <LandingPageNavbar />
-            <div className="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
-              <div>
-                <div className="text-6xl font-light text-indigo-500 leading-[71px] max-md:max-w-full max-md:text-4xl max-md:leading-[57px]">
-                  The Obsidi <span className="font-medium text-violet-500">alumni</span> network &
-                  yearbook
-                </div>
-                <div className="mt-5 text-lg leading-9 text-zinc-600 max-md:max-w-full">
-                  The yearbook aims to document memories about the academy and inspire people who
-                  want to transition into tech.
-                </div>
-              </div>
+    <div className="flex overflow-hidden flex-col px-3 sm:px-6 md:px-8 py-4 sm:py-8 md:py-11 bg-white">
+      {/* Hero Section */}
+      <section className="bg-opacity-30 py-6 sm:py-10 lg:py-16">
+        <div className="bg-[#8627f115] flex flex-col items-center pt-4 sm:pt-6 pb-8 sm:pb-11 w-full mx-auto max-w-7xl overflow-hidden py-6 sm:py-10 px-3 sm:px-8 md:px-16 rounded-xl sm:rounded-2xl md:rounded-3xl">
+          <LandingPageNavbar className="items-start"/>
+          <div className="grid items-center grid-cols-1 gap-6 md:gap-8 lg:gap-12 lg:grid-cols-2">
+            <div>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-light text-indigo-500 leading-tight sm:leading-snug md:leading-normal">
+                The Obsidi <span className="font-medium text-violet-500">alumni</span> network &
+                yearbook
+              </h1>
+              <p className="mt-3 sm:mt-4 md:mt-5 text-base sm:text-lg leading-relaxed sm:leading-loose text-zinc-600">
+                The yearbook aims to document memories about the academy and inspire people who
+                want to transition into tech.
+              </p>
+            </div>
 
-              <div>
-                <img
-                  loading="lazy"
-                  src={HeroGirl}
-                  alt="hero image"
-                  className="object-contain grow w-full aspect-[1.06] max-md:mt-10 max-md:max-w-full"
-                />
-              </div>
+            <div className="flex justify-center">
+              <img
+                loading="lazy"
+                src={HeroGirl}
+                alt="Graduate with diploma"
+                className="object-contain w-3/4 sm:w-full max-w-sm lg:max-w-md mx-auto"
+              />
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section id="about">
-          <div className="flex flex-col items-center pt-6 pb-11 mx-auto max-w-7xl max-md:px-5 max-md:mt-10 max-md:mr-1.5 max-md:max-w-full">
-            <h2 className="gap-2.5 self-center px-5 py-2.5 ml-2.5 text-4xl font-medium text-white bg-purple-600 leading-[68px] max-md:mt-10 max-md:max-w-full">
-              ABOUT ALUMNI YEARBOOK
-            </h2>
-            <div className="gap-8 grid grid-cols-12 justify-between items-center mt-14 text-black max-md:mt-10 w-full">
+      {/* About Section */}
+      <section id="about" className="py-8 sm:py-12 md:py-16">
+        <div className="flex flex-col items-center mx-auto max-w-7xl">
+          <h2 className="px-4 py-2 text-2xl sm:text-3xl md:text-4xl font-medium text-white bg-purple-600 text-center">
+            ABOUT ALUMNI YEARBOOK
+          </h2>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center mt-8 sm:mt-10 md:mt-14 text-black w-full">
+            <div className="lg:col-span-4 flex justify-center">
               <img
                 loading="lazy"
                 src={Journey}
                 alt="Journey illustration"
-                className="object-contain self-stretch my-auto aspect-[0.98] col-span-4"
+                className="object-contain w-3/4 sm:w-full max-w-xs"
               />
-              <div className="flex flex-col self-stretch my-auto max-md:max-w-full col-span-8">
-                <div className="text-7xl font-semibold tracking-tighter max-md:max-w-full max-md:text-4xl">
-                  WHERE JOURNEY BEGINS AND STORIES LIVES ON!
+            </div>
+            
+            <div className="flex flex-col lg:col-span-8">
+              <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-semibold tracking-tighter text-center lg:text-left">
+                WHERE JOURNEY BEGINS AND STORIES LIVES ON!
+              </h3>
+              
+              <div className="flex flex-col md:flex-row gap-6 sm:gap-8 md:gap-10 mt-6 sm:mt-8 md:mt-9 w-full">
+                <div className="flex-1">
+                  <h4 className="text-xl sm:text-2xl font-semibold tracking-wide text-center md:text-left">
+                    ABOUT YEARBOOK
+                  </h4>
+                  <p className="mt-4 sm:mt-6 text-base sm:text-lg tracking-normal text-center md:text-left">
+                    The Cohort 6 year book aims to celebrate our beginnings, showcase, our growth
+                    and inspire future tech enthusiast through shared stories and lasting
+                    connections
+                  </p>
                 </div>
-                <div className="flex gap-10 items-center mt-9 w-full max-md:max-w-full">
-                  <div className="flex flex-col my-auto max-md:max-w-full">
-                    <div className="text-2xl font-semibold tracking-wide max-md:max-w-full">
-                      ABOUT YEARBOOK
-                    </div>
-                    <div className="mt-6 text-lg tracking-normal max-md:max-w-full">
-                      The Cohort 6 year book aims to celebrate our beginnings, showcase, our growth
-                      and inspire future tech enthusiast through shared stories and lasting
-                      connections
-                    </div>
-                  </div>
-                  <div className="flex flex-col my-auto max-md:max-w-full">
-                    <div className="text-2xl font-semibold tracking-wide max-md:max-w-full">
-                      OUR VISION
-                    </div>
-                    <div className="mt-6 text-lg tracking-normal max-md:max-w-full">
-                      To be the blueprint that inspires others to embark on their tech journey,
-                      proving through our stories that with dedication, even the hardest challenges
-                      can be overcome
-                    </div>
-                  </div>
+                
+                <div className="flex-1">
+                  <h4 className="text-xl sm:text-2xl font-semibold tracking-wide text-center md:text-left">
+                    OUR VISION
+                  </h4>
+                  <p className="mt-4 sm:mt-6 text-base sm:text-lg tracking-normal text-center md:text-left">
+                    To be the blueprint that inspires others to embark on their tech journey,
+                    proving through our stories that with dedication, even the hardest challenges
+                    can be overcome
+                  </p>
                 </div>
               </div>
             </div>
-            <Link
-              to="/yearbook"
-              className="gap-2.5 self-center py-4 pr-10 pl-10 mt-20 max-w-full text-lg font-medium text-center text-white bg-indigo-500 rounded-lg max-md:px-5 max-md:mt-10"
-            >
-              View Yearbook
-            </Link>
           </div>
-        </section>
+          
+          <Link
+            to="/yearbook"
+            className="inline-block py-3 sm:py-4 px-6 sm:px-10 mt-8 sm:mt-12 md:mt-20 text-base sm:text-lg font-medium text-center text-white bg-indigo-500 rounded-lg hover:bg-indigo-600 transition-colors"
+          >
+            View Yearbook
+          </Link>
+        </div>
+      </section>
 
-        <section id="contributors">
-          <div className="bg-[#8627f115] flex flex-col items-center px-4 pt-6 pb-11 mx-auto max-w-7xl max-md:px-5 max-md:mt-10 max-md:mr-1.5 max-md:max-w-full relative group">
-            <header className="mt-10 mb-10 text-center">
-              <h2 className="text-5xl font-bold uppercase">Contributors</h2>
-              <p>Meet the developers</p>
-            </header>
-            <section className="overflow-hidden w-full">
-              <div className="container mx-auto h-40 flex items-center justify-center">
+      {/* Contributors Section */}
+      <section id="contributors" className="py-8 sm:py-12 md:py-16">
+        <div className="bg-[#8627f115] flex flex-col items-center px-4 pt-6 pb-11 mx-auto max-w-7xl relative group rounded-xl">
+          <header className="mt-6 sm:mt-8 md:mt-10 mb-6 sm:mb-8 md:mb-10 text-center">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold uppercase">Contributors</h2>
+            <p className="mt-2 text-base sm:text-lg">Meet the developers</p>
+          </header>
+          
+          <section className="overflow-hidden w-full">
+            <div className="container mx-auto min-h-[200px] sm:min-h-[250px] md:min-h-[300px] flex items-center justify-center py-4">
+              {/* Extract nested ternary into separate conditional rendering */}
+              {isLoading && (
+                <div className="text-center py-8">Loading contributors...</div>
+              )}
+              {!isLoading && error && (
+                <div className="text-center text-red-500 py-8">
+                  Error loading contributors: {error.message}
+                </div>
+              )}
+              {!isLoading && !error && contributors?.length === 0 && (
+                <div className="text-center py-8">No contributors found</div>
+              )}
+              {!isLoading && !error && contributors?.length > 0 && (
                 <AnimatePresence initial={false}>
                   <motion.div
                     key={currentIndex}
                     initial={{ opacity: 0, x: -50 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5 }}
-                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+                    className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
                   >
                     {selectedContributors.map((contributor, index) => (
                       <motion.div
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.85 }}
-                        animate={{ scale: hoveredIndex === index ? 1.1 : 0.9 }}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        animate={{ scale: hoveredIndex === index ? 1.05 : 1 }}
                         onHoverStart={() => setHoveredIndex(index)}
                         onHoverEnd={() => setHoveredIndex(null)}
                         key={contributor.id}
@@ -153,7 +210,6 @@ const LandingPage = () => {
                         onClick={() => window.open(contributor.html_url, '_blank')}
                       >
                         <ContributorCard
-                          key={contributor.id}
                           avatarUrl={contributor.avatar_url}
                           fullName={contributor.fullName}
                           githubHandle={contributor.login}
@@ -162,33 +218,55 @@ const LandingPage = () => {
                     ))}
                   </motion.div>
                 </AnimatePresence>
-              </div>
-            </section>
-            {/* Left Arrow */}
-            <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
-              <BsChevronCompactLeft onClick={prevSlide} size={30} />
+              )}
             </div>
-            {/* Right Arrow */}
-            <div className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-5 text-2xl rounded-full p-2 bg-black/20 text-white cursor-pointer">
-              <BsChevronCompactRight onClick={nextSlide} size={30} />
-            </div>
-            <div className="flex top-4 justify-center py-2">
-              {Array.from({ length: Math.ceil(contributors.length / itemsPerPage) }).map(
+          </section>
+          
+          {/* Navigation Controls */}
+          {contributors?.length > currentItemsPerPage && (
+            <>
+              {/* Left Arrow */}
+              <button
+                className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] left-2 sm:left-3 md:left-5 text-xl sm:text-2xl rounded-full p-1 sm:p-2 bg-black/20 text-white cursor-pointer hover:bg-black/30 transition-colors"
+                onClick={prevSlide}
+                aria-label="Previous slide"
+              >
+                <BsChevronCompactLeft size={24} />
+              </button>
+              
+              {/* Right Arrow */}
+              <button
+                className="hidden group-hover:block absolute top-[50%] -translate-x-0 translate-y-[-50%] right-2 sm:right-3 md:right-5 text-xl sm:text-2xl rounded-full p-1 sm:p-2 bg-black/20 text-white cursor-pointer hover:bg-black/30 transition-colors"
+                onClick={nextSlide}
+                aria-label="Next slide"
+              >
+                <BsChevronCompactRight size={24} />
+              </button>
+            </>
+          )}
+          
+          {/* Pagination Dots */}
+          {contributors?.length > 0 && (
+            <div className="flex justify-center py-2 sm:py-3 mt-2 sm:mt-4">
+              {Array.from({ length: Math.max(1, Math.ceil((contributors?.length || 0) / currentItemsPerPage)) }).map(
                 (_, index) => (
-                  <div
-                    key={index}
+                  <button
+                    key={`pagination-dot-${index}`}
                     onClick={() => goToSlide(index)}
-                    className={`text-2xl cursor-pointer ${index === currentIndex ? 'text-indigo-500' : 'text-gray-500'}`}
+                    aria-label={`Go to slide ${index + 1}`}
+                    className={`text-xl sm:text-2xl cursor-pointer bg-transparent border-none p-0 mx-0.5 sm:mx-1 ${
+                      index === currentIndex ? 'text-indigo-500' : 'text-gray-500'
+                    }`}
                   >
                     <RxDotFilled />
-                  </div>
+                  </button>
                 )
               )}
             </div>
-          </div>
-        </section>
-      </div>
-    </>
+          )}
+        </div>
+      </section>
+    </div>
   );
 };
 
